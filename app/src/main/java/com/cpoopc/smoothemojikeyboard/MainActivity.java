@@ -1,16 +1,42 @@
 package com.cpoopc.smoothemojikeyboard;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import com.cpoopc.smoothemojikeyboard.inputboard.SoftInputLayout;
+
+public class MainActivity extends FragmentActivity {
+
+    private double mVisibleHeight;
+    private boolean mIsKeyboardShow;
+    private View btnKeyBoard;
+    private View btnSmiley;
+    private Button btnState;
+    private TextView tvState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        btnState = (Button) findViewById(R.id.btnState);
+        tvState = (TextView) findViewById(R.id.info);
+        EditText editText = (EditText) findViewById(R.id.edittext);
+        final SoftInputLayout softInputLayout = (SoftInputLayout) findViewById(R.id.softinputLayout);
+        softInputLayout.setLogText(tvState);
+        softInputLayout.setEditText(editText);
+        btnState.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                softInputLayout.updateLog();
+            }
+        });
+
     }
 
     @Override

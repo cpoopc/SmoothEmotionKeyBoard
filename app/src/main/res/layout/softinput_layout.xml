@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/bar_container"
+        android:background="#FBCEB1"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="40dp">
+        <Button
+            android:id="@+id/btnKeyBoard"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="键盘"
+            />
+        <Button
+            android:id="@+id/btnSmile"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="表情"
+            />
+
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/container"
+        android:background="#FF9966"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+        <TextView
+            android:id="@+id/smiley"
+            android:visibility="gone"
+            android:background="#008000"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+</LinearLayout>
