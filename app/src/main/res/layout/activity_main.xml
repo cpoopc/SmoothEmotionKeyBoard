@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" tools:context=".MainActivity">
 
-    <com.cpoopc.study.UI.softinput.SoftInputLayout
+    <com.cpoopc.smoothemojikeyboard.inputboard.SoftInputLayout
         android:id="@+id/softinputLayout"
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -18,19 +18,19 @@
                 android:layout_height="wrap_content" />
             <TextView
                 android:id="@+id/info"
-                android:textColor="@color/c_black"
+                android:textColor="#000000"
                 android:layout_below="@+id/edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <Button
                 android:id="@+id/btnState"
                 android:text="state"
-                android:textColor="@color/c_black"
+                android:textColor="#000000"
                 android:layout_below="@+id/info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </RelativeLayout>
 
-    </com.cpoopc.study.UI.softinput.SoftInputLayout>
+    </com.cpoopc.smoothemojikeyboard.inputboard.SoftInputLayout>
 
 </RelativeLayout>

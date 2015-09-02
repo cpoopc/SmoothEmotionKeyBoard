@@ -27,7 +27,7 @@
         android:background="#FF9966"
         android:layout_width="match_parent"
         android:layout_height="200dp">
-        <TextView
+        <com.cpoopc.smoothemojikeyboard.smiley.view.SmileyGrid
             android:id="@+id/smiley"
             android:visibility="gone"
             android:background="#008000"

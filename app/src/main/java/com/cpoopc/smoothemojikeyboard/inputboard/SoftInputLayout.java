@@ -37,6 +37,7 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
     private int showWhat;
     private View smileyView;
     private int keyboardHeight = 400;
+    private int rootViewHeight;
 
     public SoftInputLayout(Context context) {
         super(context);
@@ -67,6 +68,7 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
     protected void onFinishInflate() {
         super.onFinishInflate();
         updateLog();
+        rootView = this;
         View layout = LayoutInflater.from(getContext()).inflate(R.layout.softinput_layout, this, true);
         btnKeyBoard = layout.findViewById(R.id.btnKeyBoard);
         btnSmiley = layout.findViewById(R.id.btnSmile);
@@ -74,7 +76,6 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
         btnSmiley.setOnClickListener(this);
         container = layout.findViewById(R.id.container);
         smileyView = layout.findViewById(R.id.smiley);
-        rootView = this;
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -107,7 +108,7 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
         }
         mVisibleHeight = visibleHeight;
         // Magic is here
-        DebugLog.e("rootView.getHeight():" + rootView.getHeight());
+        DebugLog.e("rootView.getHeight():" + rootView.getHeight() + "  rootViewHeight:"+rootViewHeight);
         if (mVisibleHeight < rootView.getHeight()) {
             int height = (int) (rootView.getHeight() - mVisibleHeight);
             if (keyboardHeight != height) {
