@@ -2,14 +2,18 @@ package com.cpoopc.smoothemojikeyboard.smiley.view;/**
  * Created by cpoopc on 2015/9/1.
  */
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 
+import com.cpoopc.smoothemojikeyboard.smiley.bean.EmotionEntity;
 import com.cpoopc.smoothemojikeyboard.smiley.bean.SmileyEntity;
+import com.cpoopc.smoothemojikeyboard.smiley.data.Haha;
 import com.cpoopc.smoothemojikeyboard.smiley.emoji.Emojicon;
 import com.cpoopc.smoothemojikeyboard.smiley.emoji.People;
 
@@ -40,6 +44,7 @@ public class SmileyGrid extends GridView{
         init();
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public SmileyGrid(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
@@ -52,11 +57,11 @@ public class SmileyGrid extends GridView{
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        SmileyAdapter<Emojicon> smileyAdapter = new SmileyAdapter<Emojicon>(getContext(), Arrays.asList(People.DATA));
+        SmileyAdapter<EmotionEntity> smileyAdapter = new SmileyAdapter<EmotionEntity>(getContext(), Haha.DATA);
         setAdapter(smileyAdapter);
     }
 
-    public static class SmileyAdapter<Model extends Emojicon> extends BaseAdapter {
+    public static class SmileyAdapter<Model extends EmotionEntity> extends BaseAdapter {
 
         private Context context;
         protected List<Model> itemList;

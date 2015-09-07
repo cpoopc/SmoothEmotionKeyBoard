@@ -2,13 +2,21 @@ package com.cpoopc.smoothemojikeyboard.smiley.view;/**
  * Created by cpoopc on 2015/9/1.
  */
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.SpannedString;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.cpoopc.smoothemojikeyboard.R;
+import com.cpoopc.smoothemojikeyboard.smiley.EmotionManager;
+import com.cpoopc.smoothemojikeyboard.smiley.bean.EmotionEntity;
 import com.cpoopc.smoothemojikeyboard.smiley.emoji.Emojicon;
 import com.cpoopc.smoothemojikeyboard.smiley.emoji.EmojiconTextView;
 
@@ -22,7 +30,7 @@ import com.cpoopc.smoothemojikeyboard.smiley.emoji.EmojiconTextView;
 public class SmileyView extends FrameLayout{
 
     private EmojiconTextView emojiconTextView;
-    private Emojicon mItem;
+    private EmotionEntity mItem;
 
     public SmileyView(Context context) {
         super(context);
@@ -39,6 +47,7 @@ public class SmileyView extends FrameLayout{
         init();
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public SmileyView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
@@ -49,9 +58,12 @@ public class SmileyView extends FrameLayout{
         emojiconTextView = (EmojiconTextView) layout.findViewById(R.id.emojicon_icon);
     }
 
-    public void bindData(Emojicon item) {
+    public void bindData(EmotionEntity item) {
         mItem = item;
-        emojiconTextView.setText(item.getEmoji());
-
+//        SpannedString spannedString = new SpannedString("");
+//        CharSequence text = emojiconTextView.getText();
+        SpannableStringBuilder sb = new SpannableStringBuilder("haha");
+        sb.setSpan(EmotionManager.getImageSpan(item), 0, sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        emojiconTextView.setText(sb);
     }
 }
