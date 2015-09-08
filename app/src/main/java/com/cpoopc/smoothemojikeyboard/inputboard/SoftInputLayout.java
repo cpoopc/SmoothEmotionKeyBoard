@@ -71,11 +71,11 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
             ImageSpan imageSpan = EmotionManager.getImageSpan(emotionEntity);
             if (selectionStart != selectionEnd) {
                 text.replace(selectionStart, selectionEnd, emotionEntity.getCode());
-                text.setSpan(imageSpan, selectionStart, selectionEnd + emotionEntity.getCode().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                text.setSpan(imageSpan, selectionStart, selectionStart + emotionEntity.getCode().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 //                text.replace(selectionStart,selectionEnd, )
             } else {
                 text.insert(selectionStart, emotionEntity.getCode());
-                text.setSpan(imageSpan, selectionStart, selectionEnd + emotionEntity.getCode().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                text.setSpan(imageSpan, selectionStart, selectionStart + emotionEntity.getCode().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
     }

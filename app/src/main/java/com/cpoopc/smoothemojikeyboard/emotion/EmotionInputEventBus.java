@@ -13,7 +13,7 @@ import com.cpoopc.smoothemojikeyboard.emotion.bean.EmotionEntity;
 public enum EmotionInputEventBus {
     instance;
 
-    interface EmotionInputEventListener {
+    public interface EmotionInputEventListener {
         void onEmotionInput(EmotionEntity emotionEntity);
     }
 
