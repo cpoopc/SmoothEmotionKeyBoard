@@ -44,13 +44,13 @@ public class Haha {
         Matcher matcher = PATTERN.matcher(INFO);
         while (matcher.find()) {
             String group = matcher.group();
-            DebugLog.e(matcher.groupCount() + ":" + group);
+//            DebugLog.e(matcher.groupCount() + ":" + group);
             StringTokenizer st = new StringTokenizer(group.substring(1, group.length() - 1), ",");
             String code = st.nextToken();
             String name = st.nextToken();
             emotionEntityList.add(EmotionEntity.fromAssert(code, path(name)));
-            DebugLog.e("st:code:" + code);
-            DebugLog.e("st:name:" + name);
+//            DebugLog.e("st:code:" + code);
+//            DebugLog.e("st:name:" + name);
         }
         return emotionEntityList;
     }

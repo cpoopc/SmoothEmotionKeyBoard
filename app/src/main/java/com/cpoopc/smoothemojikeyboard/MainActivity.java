@@ -39,9 +39,9 @@ public class MainActivity extends FragmentActivity {
             }
         });
 //        Haha.initData();
-        for (int i = 0; i < Haha.DATA.size(); i++) {
-            DebugLog.e("" + Haha.DATA.get(i));
-        }
+//        for (int i = 0; i < Haha.DATA.size(); i++) {
+//            DebugLog.e("" + Haha.DATA.get(i));
+//        }
 
     }
 

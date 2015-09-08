@@ -2,16 +2,13 @@ package com.cpoopc.smoothemojikeyboard.smiley;/**
  * Created by Administrator on 2015-09-07.
  */
 
-import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.text.style.ImageSpan;
 
 import com.cpoopc.smoothemojikeyboard.ContextHelper;
 import com.cpoopc.smoothemojikeyboard.smiley.bean.EmotionEntity;
-import com.cpoopc.smoothemojikeyboard.utils.DebugLog;
 
 import java.io.InputStream;
 import java.lang.ref.SoftReference;
@@ -45,12 +42,8 @@ public class EmotionManager {
         } catch (Exception e){
             e.printStackTrace();
         }
-
-        //BitmapFactory.Options options = new BitmapFactory.Options();
-        //options.inSampleSize = chunks;
-
         Bitmap temp = BitmapFactory.decodeStream(in, null, null);
-        DebugLog.e("" + temp);
+//        DebugLog.e("" + temp);
         bitmapSoftReference = new SoftReference<Bitmap>(temp);
         bitmapMap.put(source, bitmapSoftReference);
         return temp;

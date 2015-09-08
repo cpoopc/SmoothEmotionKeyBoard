@@ -30,15 +30,19 @@
     </LinearLayout>
     <RelativeLayout
         android:id="@+id/container"
-        android:background="#FF9966"
         android:layout_width="match_parent"
         android:layout_height="200dp">
-        <com.cpoopc.smoothemojikeyboard.smiley.view.SmileyGrid
+        <com.cpoopc.smoothemojikeyboard.smiley.view.EmotionPager
             android:id="@+id/smiley"
             android:visibility="gone"
-            android:background="#008000"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+        <!--<com.cpoopc.smoothemojikeyboard.smiley.view.SmileyGrid-->
+            <!--android:id="@+id/smiley"-->
+            <!--android:visibility="gone"-->
+            <!--android:background="#008000"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
         <View
             android:id="@+id/otherView"
             android:visibility="gone"

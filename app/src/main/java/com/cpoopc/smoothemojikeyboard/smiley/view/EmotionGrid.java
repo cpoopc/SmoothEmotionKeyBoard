@@ -12,13 +12,8 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 
 import com.cpoopc.smoothemojikeyboard.smiley.bean.EmotionEntity;
-import com.cpoopc.smoothemojikeyboard.smiley.bean.SmileyEntity;
-import com.cpoopc.smoothemojikeyboard.smiley.data.Haha;
-import com.cpoopc.smoothemojikeyboard.smiley.emoji.Emojicon;
-import com.cpoopc.smoothemojikeyboard.smiley.emoji.People;
+import com.cpoopc.smoothemojikeyboard.utils.DebugLog;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,36 +23,67 @@ import java.util.List;
  * Time: 18:30
  * Ver.: 0.1
  */
-public class SmileyGrid extends GridView{
-    public SmileyGrid(Context context) {
+public class EmotionGrid extends GridView{
+
+    private SmileyAdapter<EmotionEntity> smileyAdapter;
+
+    public EmotionGrid(Context context) {
         super(context);
         init();
     }
 
-    public SmileyGrid(Context context, AttributeSet attrs) {
+    public EmotionGrid(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public SmileyGrid(Context context, AttributeSet attrs, int defStyleAttr) {
+    public EmotionGrid(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public SmileyGrid(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public EmotionGrid(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
 
     private void init() {
-        setNumColumns(6);
+        setNumColumns(7);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        SmileyAdapter<EmotionEntity> smileyAdapter = new SmileyAdapter<EmotionEntity>(getContext(), Haha.DATA);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int measuredHeight = getMeasuredHeight();
+        int height = MeasureSpec.getSize(heightMeasureSpec) * 4 / 5;
+        if (height != 0 && height == measuredHeight) {
+            return;
+        }
+//        DebugLog.e("height:" + height);
+//        DebugLog.e("widthMeasureSpec:" + widthMeasureSpec + " " + MeasureSpec.getSize(widthMeasureSpec));
+//        DebugLog.e("heightMeasureSpec:" + heightMeasureSpec + " " + MeasureSpec.getSize(heightMeasureSpec));
+        setMeasuredDimension(getMeasuredWidth(), height);
+    }
+
+
+
+    @Override
+    protected void measureChild(View child, int parentWidthMeasureSpec, int parentHeightMeasureSpec) {
+        DebugLog.e(child+" parentHeightMeasureSpec:" + parentHeightMeasureSpec + " " + MeasureSpec.getSize(parentHeightMeasureSpec));
+        super.measureChild(child, parentWidthMeasureSpec, parentHeightMeasureSpec);
+    }
+
+    public void bindData(List<EmotionEntity> emotionEntities) {
+        if (smileyAdapter == null) {
+            smileyAdapter = new SmileyAdapter<EmotionEntity>(getContext(), null);
+        }
+        smileyAdapter.setItems(emotionEntities);
         setAdapter(smileyAdapter);
     }
 
@@ -103,9 +129,9 @@ public class SmileyGrid extends GridView{
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            SmileyView smileyView = null;
+            EmotionView smileyView = null;
             if (convertView != null) {
-                smileyView = (SmileyView) convertView;
+                smileyView = (EmotionView) convertView;
             } else {
                 smileyView = createView();
             }
@@ -118,8 +144,8 @@ public class SmileyGrid extends GridView{
          * 子类需要实现创建View的方法
          * @return
          */
-        protected SmileyView createView() {
-            return new SmileyView(context);
+        protected EmotionView createView() {
+            return new EmotionView(context);
         }
     }
 

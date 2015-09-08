@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cpoopc.smoothemojikeyboard.R;
+import com.cpoopc.smoothemojikeyboard.smiley.data.Haha;
+import com.cpoopc.smoothemojikeyboard.smiley.view.EmotionPager;
 import com.cpoopc.smoothemojikeyboard.utils.DebugLog;
 import com.cpoopc.smoothemojikeyboard.utils.InputMethodUtils;
 
@@ -47,7 +49,7 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
     private Map<View,ViewHolder> viewMapping;
 
     private View btnSmiley;
-    private View smileyView;
+    private EmotionPager smileyView;
 
     private View btnOther;
     private View otherView;
@@ -139,7 +141,8 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
         btnSmiley = layout.findViewById(R.id.btnSmile);
         btnSmiley.setOnClickListener(this);
         btnKeyBoard.setOnClickListener(this);
-        smileyView = layout.findViewById(R.id.smiley);
+        smileyView = (EmotionPager) layout.findViewById(R.id.smiley);
+        smileyView.bindData(Haha.DATA);
         add2ShowViewList(smileyView);
         add2MappingMap(btnSmiley, SHOW_SMILE, smileyView);// btnSmiley-(SHOW_SMILE-smileyView)
     }
