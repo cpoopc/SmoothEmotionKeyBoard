@@ -2,6 +2,7 @@ package com.cpoopc.smoothemojikeyboard.emotion.data;/**
  * Created by Administrator on 2015-09-03.
  */
 
+import com.cpoopc.smoothemojikeyboard.emotion.EmotionManager;
 import com.cpoopc.smoothemojikeyboard.emotion.bean.EmotionEntity;
 
 import java.util.ArrayList;
@@ -47,7 +48,9 @@ public class HahaEmotion {
             StringTokenizer st = new StringTokenizer(group.substring(1, group.length() - 1), ",");
             String code = st.nextToken();
             String name = st.nextToken();
-            emotionEntityList.add(EmotionEntity.fromAssert(code, path(name)));
+            EmotionEntity emotionEntity = EmotionEntity.fromAssert(code, path(name));
+            EmotionManager.registerEmotion(emotionEntity);
+            emotionEntityList.add(emotionEntity);
 //            DebugLog.e("st:code:" + code);
 //            DebugLog.e("st:name:" + name);
         }

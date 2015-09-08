@@ -8,7 +8,10 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -39,7 +42,7 @@ import java.util.Map;
  * Date: 2015-09-01
  * Time: 00:18
  */
-public class SoftInputLayout extends LinearLayout implements View.OnClickListener, EmotionInputEventBus.EmotionInputEventListener {
+public class SoftInputLayout extends LinearLayout implements View.OnClickListener, EmotionInputEventBus.EmotionInputEventListener, TextWatcher {
 
     private View rootView;
     private double mVisibleHeight;
@@ -61,23 +64,38 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
     private View btnOther;
     private View otherView;
 
+    private String mDealingText;
+
     @Override
     public void onEmotionInput(EmotionEntity emotionEntity) {
         DebugLog.e("emotion " + emotionEntity);
         if (editText != null) {
             int selectionStart = editText.getSelectionStart();
             int selectionEnd = editText.getSelectionEnd();
+            mDealingText = emotionEntity.getCode();
             EmotionManager.getImageSpan(emotionEntity);
             Editable text = editText.getText();
             ImageSpan imageSpan = EmotionManager.getImageSpan(emotionEntity);
             if (selectionStart != selectionEnd) {
+                DebugLog.e("----11");
                 text.replace(selectionStart, selectionEnd, emotionEntity.getCode());
                 text.setSpan(imageSpan, selectionStart, selectionStart + emotionEntity.getCode().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 //                text.replace(selectionStart,selectionEnd, )
             } else {
+                DebugLog.e("----12");
+//                SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
+//                spannableStringBuilder.append(text.subSequence(0, selectionStart));
+//                spannableStringBuilder.append(emotionEntity.getCode());
+//                spannableStringBuilder.append(text.subSequence(selectionStart, text.length()));
+//                spannableStringBuilder.setSpan(imageSpan, selectionStart, selectionStart + emotionEntity.getCode().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                text.clear();
+//                editText.setText(spannableStringBuilder);
+//                editText.setSelection(selectionStart + emotionEntity.getCode().length());
                 text.insert(selectionStart, emotionEntity.getCode());
                 text.setSpan(imageSpan, selectionStart, selectionStart + emotionEntity.getCode().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
+            mDealingText = null;
+            DebugLog.e("----2");
         }
     }
 
@@ -327,6 +345,26 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
 
     public void setEditText(EditText editText) {
         this.editText = editText;
+        editText.addTextChangedListener(this);
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        DebugLog.e("before:" + s);
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        if (count >1 && !TextUtils.equals(s.subSequence(start, start + count), mDealingText)) {
+            DebugLog.e("复制的:" + s.subSequence(start, start + count));
+            EmotionManager.parseCharSequence((SpannableStringBuilder) s, start, start + count);
+        }
+        DebugLog.e("onTextChanged:" + s);
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
     }
 
 }

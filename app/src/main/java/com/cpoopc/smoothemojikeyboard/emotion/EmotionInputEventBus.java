@@ -3,6 +3,7 @@ package com.cpoopc.smoothemojikeyboard.emotion;/**
  */
 
 import com.cpoopc.smoothemojikeyboard.emotion.bean.EmotionEntity;
+import com.cpoopc.smoothemojikeyboard.utils.DebugLog;
 
 /**
  * User: cpoopc
@@ -12,6 +13,8 @@ import com.cpoopc.smoothemojikeyboard.emotion.bean.EmotionEntity;
  */
 public enum EmotionInputEventBus {
     instance;
+
+    private long lastDealTime = 0, lastEndTime = 0;
 
     public interface EmotionInputEventListener {
         void onEmotionInput(EmotionEntity emotionEntity);
@@ -24,8 +27,16 @@ public enum EmotionInputEventBus {
     }
 
     public void postEmotion(EmotionEntity emotionEntity) {
+        DebugLog.i("lastDealTime:" + lastDealTime);
         if (emotionInputEventListener != null) {
+            long startTime = System.currentTimeMillis();
+            if (startTime < lastEndTime + 100) {
+                DebugLog.e(startTime + ", " + (lastEndTime + 100));
+                return;
+            }
             emotionInputEventListener.onEmotionInput(emotionEntity);
+            lastEndTime = System.currentTimeMillis();
+            lastDealTime = lastEndTime - startTime;
         }
     }
 
