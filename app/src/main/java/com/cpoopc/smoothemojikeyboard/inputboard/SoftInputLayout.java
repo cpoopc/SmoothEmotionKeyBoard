@@ -3,6 +3,7 @@ package com.cpoopc.smoothemojikeyboard.inputboard;/**
  */
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
@@ -129,7 +130,12 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
         updateLog();
         viewMapping = new HashMap<>();
         showViewList = new ArrayList<>();
-        rootView = this;
+        Context context = getContext();
+        if (context instanceof Activity) {
+            rootView = ((Activity) context).getWindow().getDecorView();
+        } else {
+            rootView = this;
+        }
         View layout = LayoutInflater.from(getContext()).inflate(R.layout.softinput_layout, this, true);
         btnKeyBoard = layout.findViewById(R.id.btnKeyBoard);
         container = layout.findViewById(R.id.container);
@@ -184,7 +190,7 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
     private void getKeyboardHeight() {
         Rect r = new Rect();
         rootView.getWindowVisibleDisplayFrame(r);
-        int visibleHeight = r.height();
+        int visibleHeight = r.height() + r.top;
         if (mVisibleHeight == 0) {
             mVisibleHeight = visibleHeight;
             return;
