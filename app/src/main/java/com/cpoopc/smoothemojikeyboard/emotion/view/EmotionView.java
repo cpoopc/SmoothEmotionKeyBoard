@@ -1,4 +1,4 @@
-package com.cpoopc.smoothemojikeyboard.smiley.view;/**
+package com.cpoopc.smoothemojikeyboard.emotion.view;/**
  * Created by cpoopc on 2015/9/1.
  */
 
@@ -9,8 +9,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.cpoopc.smoothemojikeyboard.smiley.EmotionManager;
-import com.cpoopc.smoothemojikeyboard.smiley.bean.EmotionEntity;
+import com.cpoopc.smoothemojikeyboard.emotion.EmotionInputEventBus;
+import com.cpoopc.smoothemojikeyboard.emotion.EmotionManager;
+import com.cpoopc.smoothemojikeyboard.emotion.bean.EmotionEntity;
 
 /**
  * 显示单个表情view
@@ -19,7 +20,7 @@ import com.cpoopc.smoothemojikeyboard.smiley.bean.EmotionEntity;
  * Time: 18:31
  * Ver.: 0.1
  */
-public class EmotionView extends ImageView{
+public class EmotionView extends ImageView implements View.OnClickListener {
 
     private EmotionEntity mItem;
 
@@ -46,6 +47,7 @@ public class EmotionView extends ImageView{
 
     private void init() {
         setScaleType(ScaleType.CENTER_INSIDE);
+        setOnClickListener(this);
     }
 
     @Override
@@ -62,5 +64,10 @@ public class EmotionView extends ImageView{
     public void bindData(EmotionEntity item) {
         mItem = item;
         setImageBitmap(EmotionManager.getBitmap(item.getSource()));
+    }
+
+    @Override
+    public void onClick(View v) {
+        EmotionInputEventBus.instance.postEmotion(mItem);
     }
 }

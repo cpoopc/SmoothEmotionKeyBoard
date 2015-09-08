@@ -32,7 +32,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="200dp">
-        <com.cpoopc.smoothemojikeyboard.smiley.view.EmotionPager
+        <com.cpoopc.smoothemojikeyboard.emotion.view.EmotionPager
             android:id="@+id/smiley"
             android:visibility="gone"
             android:layout_width="match_parent"

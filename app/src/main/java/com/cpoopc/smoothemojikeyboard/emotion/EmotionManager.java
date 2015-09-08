@@ -1,4 +1,4 @@
-package com.cpoopc.smoothemojikeyboard.smiley;/**
+package com.cpoopc.smoothemojikeyboard.emotion;/**
  * Created by Administrator on 2015-09-07.
  */
 
@@ -8,7 +8,7 @@ import android.graphics.BitmapFactory;
 import android.text.style.ImageSpan;
 
 import com.cpoopc.smoothemojikeyboard.ContextHelper;
-import com.cpoopc.smoothemojikeyboard.smiley.bean.EmotionEntity;
+import com.cpoopc.smoothemojikeyboard.emotion.bean.EmotionEntity;
 
 import java.io.InputStream;
 import java.lang.ref.SoftReference;

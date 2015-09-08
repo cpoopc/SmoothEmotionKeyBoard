@@ -6,6 +6,9 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
+import android.text.Editable;
+import android.text.Spanned;
+import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +18,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cpoopc.smoothemojikeyboard.R;
-import com.cpoopc.smoothemojikeyboard.smiley.data.Haha;
-import com.cpoopc.smoothemojikeyboard.smiley.view.EmotionPager;
+import com.cpoopc.smoothemojikeyboard.emotion.EmotionInputEventBus;
+import com.cpoopc.smoothemojikeyboard.emotion.EmotionManager;
+import com.cpoopc.smoothemojikeyboard.emotion.bean.EmotionEntity;
+import com.cpoopc.smoothemojikeyboard.emotion.data.HahaEmotion;
+import com.cpoopc.smoothemojikeyboard.emotion.view.EmotionPager;
 import com.cpoopc.smoothemojikeyboard.utils.DebugLog;
 import com.cpoopc.smoothemojikeyboard.utils.InputMethodUtils;
 
@@ -32,7 +38,7 @@ import java.util.Map;
  * Date: 2015-09-01
  * Time: 00:18
  */
-public class SoftInputLayout extends LinearLayout implements View.OnClickListener {
+public class SoftInputLayout extends LinearLayout implements View.OnClickListener, EmotionInputEventBus.EmotionInputEventListener {
 
     private View rootView;
     private double mVisibleHeight;
@@ -53,6 +59,26 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
 
     private View btnOther;
     private View otherView;
+
+    @Override
+    public void onEmotionInput(EmotionEntity emotionEntity) {
+        DebugLog.e("emotion " + emotionEntity);
+        if (editText != null) {
+            int selectionStart = editText.getSelectionStart();
+            int selectionEnd = editText.getSelectionEnd();
+            EmotionManager.getImageSpan(emotionEntity);
+            Editable text = editText.getText();
+            ImageSpan imageSpan = EmotionManager.getImageSpan(emotionEntity);
+            if (selectionStart != selectionEnd) {
+                text.replace(selectionStart, selectionEnd, emotionEntity.getCode());
+                text.setSpan(imageSpan, selectionStart, selectionEnd + emotionEntity.getCode().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                text.replace(selectionStart,selectionEnd, )
+            } else {
+                text.insert(selectionStart, emotionEntity.getCode());
+                text.setSpan(imageSpan, selectionStart, selectionEnd + emotionEntity.getCode().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+    }
 
     private static class ViewHolder{
         private int SHOW_TYPE;
@@ -94,7 +120,7 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
     }
 
     public void init() {
-
+        EmotionInputEventBus.instance.setEmotionInputEventListener(this);
     }
 
     @Override
@@ -142,7 +168,7 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
         btnSmiley.setOnClickListener(this);
         btnKeyBoard.setOnClickListener(this);
         smileyView = (EmotionPager) layout.findViewById(R.id.smiley);
-        smileyView.bindData(Haha.DATA);
+        smileyView.bindData(HahaEmotion.DATA);
         add2ShowViewList(smileyView);
         add2MappingMap(btnSmiley, SHOW_SMILE, smileyView);// btnSmiley-(SHOW_SMILE-smileyView)
     }

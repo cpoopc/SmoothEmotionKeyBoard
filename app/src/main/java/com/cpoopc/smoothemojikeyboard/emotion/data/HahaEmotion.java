@@ -1,9 +1,8 @@
-package com.cpoopc.smoothemojikeyboard.smiley.data;/**
+package com.cpoopc.smoothemojikeyboard.emotion.data;/**
  * Created by Administrator on 2015-09-03.
  */
 
-import com.cpoopc.smoothemojikeyboard.smiley.bean.EmotionEntity;
-import com.cpoopc.smoothemojikeyboard.utils.DebugLog;
+import com.cpoopc.smoothemojikeyboard.emotion.bean.EmotionEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,7 @@ import java.util.regex.Pattern;
  * Date: 2015-09-03
  * Time: 13:04
  */
-public class Haha {
+public class HahaEmotion {
 
     public static final String pathBase = "emotions/";
 

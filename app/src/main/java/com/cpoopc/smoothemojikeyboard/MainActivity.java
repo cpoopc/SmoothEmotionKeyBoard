@@ -10,8 +10,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.cpoopc.smoothemojikeyboard.inputboard.SoftInputLayout;
-import com.cpoopc.smoothemojikeyboard.smiley.data.Haha;
-import com.cpoopc.smoothemojikeyboard.utils.DebugLog;
 
 public class MainActivity extends FragmentActivity {
 
