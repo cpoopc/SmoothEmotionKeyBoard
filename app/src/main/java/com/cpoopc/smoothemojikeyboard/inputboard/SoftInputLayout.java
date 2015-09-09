@@ -7,12 +7,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
-import android.text.Editable;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,9 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cpoopc.smoothemojikeyboard.R;
-import com.cpoopc.smoothemojikeyboard.emotion.EmotionInputEventBus;
-import com.cpoopc.smoothemojikeyboard.emotion.EmotionManager;
-import com.cpoopc.smoothemojikeyboard.emotion.bean.EmotionEntity;
 import com.cpoopc.smoothemojikeyboard.emotion.data.HahaEmotion;
 import com.cpoopc.smoothemojikeyboard.emotion.view.EmotionPager;
 import com.cpoopc.smoothemojikeyboard.utils.DebugLog;
@@ -32,7 +24,6 @@ import com.cpoopc.smoothemojikeyboard.utils.InputMethodUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +33,7 @@ import java.util.Map;
  * Date: 2015-09-01
  * Time: 00:18
  */
-public class SoftInputLayout extends LinearLayout implements View.OnClickListener, EmotionInputEventBus.EmotionInputEventListener, TextWatcher {
+public class SoftInputLayout extends LinearLayout implements View.OnClickListener {
 
     private View rootView;
     private double mVisibleHeight;
@@ -54,7 +45,6 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
     public final static int SHOW_OTHER = 0X11;
     private int showWhat;
     private int keyboardHeight = 400;
-    private int rootViewHeight;
     private List<View> showViewList;
     private Map<View,ViewHolder> viewMapping;
 
@@ -63,48 +53,6 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
 
     private View btnOther;
     private View otherView;
-
-    private String mDealingText;
-    private String mLogText;
-
-    @Override
-    public void onEmotionInput(EmotionEntity emotionEntity) {
-        DebugLog.e("emotion " + emotionEntity);
-        if (editText != null) {
-            int selectionStart = editText.getSelectionStart();
-            int selectionEnd = editText.getSelectionEnd();
-            mDealingText = emotionEntity.getCode();
-            EmotionManager.getImageSpan(emotionEntity);
-            Editable text = editText.getText();
-            ImageSpan imageSpan = EmotionManager.getImageSpan(emotionEntity);
-            if (selectionStart != selectionEnd) {
-                DebugLog.e("----11");
-                text.replace(selectionStart, selectionEnd, emotionEntity.getCode());
-                text.setSpan(imageSpan, selectionStart, selectionStart + emotionEntity.getCode().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//                text.replace(selectionStart,selectionEnd, )
-            } else {
-                DebugLog.e("----12");
-//                SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder();
-//                spannableStringBuilder.append(text.subSequence(0, selectionStart));
-//                spannableStringBuilder.append(emotionEntity.getCode());
-//                spannableStringBuilder.append(text.subSequence(selectionStart, text.length()));
-//                spannableStringBuilder.setSpan(imageSpan, selectionStart, selectionStart + emotionEntity.getCode().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//                text.clear();
-//                editText.setText(spannableStringBuilder);
-//                editText.setSelection(selectionStart + emotionEntity.getCode().length());
-                text.insert(selectionStart, emotionEntity.getCode());
-                text.setSpan(imageSpan, selectionStart, selectionStart + emotionEntity.getCode().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-            mDealingText = null;
-            DebugLog.e("----2");
-        }
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        DebugLog.e("----w "+w+","+h+","+oldw+","+oldh+",");
-        super.onSizeChanged(w, h, oldw, oldh);
-    }
 
     private static class ViewHolder{
         private int SHOW_TYPE;
@@ -146,7 +94,7 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
     }
 
     public void init() {
-        EmotionInputEventBus.instance.setEmotionInputEventListener(this);
+//        EmotionInputEventBus.instance.setEmotionInputEventListener(this);
     }
 
     @Override
@@ -155,7 +103,7 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
         updateLog();
         viewMapping = new HashMap<>();
         showViewList = new ArrayList<>();
-        Context context = getContext();
+        final Context context = getContext();
         if (context instanceof Activity) {
             rootView = ((Activity) context).getWindow().getDecorView();
         } else {
@@ -174,39 +122,54 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
                 DebugLog.e("visiable height:" + mVisibleHeight + " mIsKeyboardShow:" + mIsKeyboardShow);
                 updateLog();
                 if (mIsKeyboardShow) {
-//                    showView(container);
                     hideView(container);
+//                    DebugLog.e("-----------------------------键盘弹起,隐藏container");
                 } else {
                     if (showWhat == 0) {
                         hideView(container);
+//                        DebugLog.e("-----------------------------键盘收起,showWhat == 0,隐藏container");
                     } else if (showWhat == SHOW_KEYBOARD) {
                         showWhat = 0;
+//                        DebugLog.e("-----------------------------键盘收起,showWhat == SHOW_KEYBOARD,错误状态?");
                     } else {
                         showView(container);
+//                        DebugLog.e("-----------------------------键盘收起,显示表情  显示container");
                     }
                 }
             }
         });
 
-        rootView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                DebugLog.e("onScrollChanged");
-            }
-        });
+    }
 
-        rootView.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
-            @Override
-            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
-                DebugLog.e("onGlobalFocusChanged:oldFocus:" + oldFocus + " newFocus:" + newFocus);
+    private void getKeyboardHeight() {
+        Rect r = new Rect();
+        rootView.getWindowVisibleDisplayFrame(r);
+        int visibleHeight = r.height() + r.top;
+        if (mVisibleHeight == 0) {
+            mVisibleHeight = visibleHeight;
+            return;
+        }
+        if (mVisibleHeight == visibleHeight) {
+            return;
+        }
+        mVisibleHeight = visibleHeight;
+        // Magic is here
+        DebugLog.e("rootView.getHeight():" + rootView.getHeight());
+        if (mVisibleHeight < rootView.getHeight()) {
+            int height = (int) (rootView.getHeight() - mVisibleHeight);
+            if (keyboardHeight != height) {
+                keyboardHeight = height;
+                container.getLayoutParams().height = height;
+                container.requestLayout();
             }
-        });
-        rootView.getViewTreeObserver().addOnWindowFocusChangeListener(new ViewTreeObserver.OnWindowFocusChangeListener() {
-            @Override
-            public void onWindowFocusChanged(boolean hasFocus) {
-                DebugLog.e("onWindowFocusChanged:hasFocus"+hasFocus);
+            mIsKeyboardShow = true;
+            showWhat = SHOW_KEYBOARD;
+        } else {
+            mIsKeyboardShow = false;
+            if (showWhat == SHOW_KEYBOARD) {
+                showWhat = 0;
             }
-        });
+        }
     }
 
     private void setupOtherView(View layout) {
@@ -235,50 +198,21 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
         showViewList.add(view);
     }
 
-    private void getKeyboardHeight() {
-        Rect r = new Rect();
-        rootView.getWindowVisibleDisplayFrame(r);
-        int visibleHeight = r.height() + r.top;
-        if (mVisibleHeight == 0) {
-            mVisibleHeight = visibleHeight;
-            return;
-        }
-        if (mVisibleHeight == visibleHeight) {
-            return;
-        }
-        mVisibleHeight = visibleHeight;
-        // Magic is here
-        DebugLog.e("rootView.getHeight():" + rootView.getHeight() + "  rootViewHeight:" + rootViewHeight);
-        if (mVisibleHeight < rootView.getHeight()) {
-            int height = (int) (rootView.getHeight() - mVisibleHeight);
-            if (keyboardHeight != height) {
-                keyboardHeight = height;
-                container.getLayoutParams().height = height;
-                container.requestLayout();
-            }
-            mIsKeyboardShow = true;
-            showWhat = SHOW_KEYBOARD;
-        } else {
-            mIsKeyboardShow = false;
-            if (showWhat == SHOW_KEYBOARD) {
-                showWhat = 0;
-            }
-        }
-    }
-
     @Override
     public void onClick(View v) {
         updateLog();
-        boolean isKeyBoardShowTemp = mIsKeyboardShow;
         if (v == btnKeyBoard) {
             // 点击键盘
             if (showWhat == SHOW_KEYBOARD) {
-                hideView(container);
+                showWhat = 0;
+                hideSoftInput();
             } else if (showWhat == 0) {
-//                showView(container);
+                showWhat = SHOW_KEYBOARD;
                 showSoftInput();
+//                showView(container);// 可以先显示,后隐藏
             } else {
-//                hideView(container);
+//                hideView(container);// 不能马上隐藏
+                showWhat = SHOW_KEYBOARD;
                 hideAllViewExceptKeyBoard();
                 showSoftInput();
             }
@@ -290,22 +224,20 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
                 // 点击表情
                 if (showWhat == show_type) {
                     // 隐藏表情,隐藏layout
+                    showWhat = 0;
                     hideView(showView);
                     hideView(container);
-                    showWhat = 0;
+                } else if (showWhat == SHOW_KEYBOARD) {
+                    showWhat = show_type;
+                    hideSoftInput();
+                    showView(showView);
                 } else {
                     showWhat = show_type;
                     hideAllViewExceptKeyBoard();
                     showView(showView);
-                    if (!mIsKeyboardShow) {
-                        showView(container);
-                    }
+                    showView(container);
                 }
             }
-        }
-
-        if (isKeyBoardShowTemp) {
-            hideSoftInput();
         }
         updateLog();
     }
@@ -317,15 +249,11 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
 
     private void showSoftInput() {
         DebugLog.e("显示软键盘");
-        showWhat = SHOW_KEYBOARD;
         InputMethodUtils.showSoftInputMethod(getContext(), editText);
     }
 
     private void hideView(View view) {
         view.setVisibility(GONE);
-        if (view == container) {
-            showWhat = 0;
-        }
     }
 
     /**
@@ -339,19 +267,18 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
 
     private void showView(View view) {
         view.setVisibility(VISIBLE);
-        if (view != container) {
-            Iterator<Map.Entry<View, ViewHolder>> iterator = viewMapping.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<View, ViewHolder> next = iterator.next();
-                if (next.getValue().getShowView() == view) {
-                    showWhat = next.getValue().getSHOW_TYPE();
-                    return;
-                }
-            }
-        }
     }
 
+    private EditText editText;
+
+    public void setEditText(EditText editText) {
+        this.editText = editText;
+    }
+
+    /*********************************** 调试LOG ****************************************/
     private TextView tvLog;
+
+    private String mLogText;
 
     public void setLogText(final TextView tvLog) {
         this.tvLog = tvLog;
@@ -396,34 +323,8 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
             int[] location = new int[2];
             rootView.getLocationOnScreen(location);
             sb.append("\n");
-            sb.append(rootView + " rect " + r + " rootView location " + location[0] + "," + location[1] + " scrollY : "+rootView.getScrollY());
+            sb.append(rootView + " rect " + r + " rootView location " + location[0] + "," + location[1] + " scrollY : " + rootView.getScrollY());
         }
-    }
-
-    private EditText editText;
-
-    public void setEditText(EditText editText) {
-        this.editText = editText;
-        editText.addTextChangedListener(this);
-    }
-
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//        DebugLog.e("before:" + s);
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (count >1 && !TextUtils.equals(s.subSequence(start, start + count), mDealingText)) {
-//            DebugLog.e("复制的:" + s.subSequence(start, start + count));
-            EmotionManager.parseCharSequence((SpannableStringBuilder) s, start, start + count);
-        }
-//        DebugLog.e("onTextChanged:" + s);
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
     }
 
 }
