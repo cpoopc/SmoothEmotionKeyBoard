@@ -65,6 +65,7 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
     private View otherView;
 
     private String mDealingText;
+    private String mLogText;
 
     @Override
     public void onEmotionInput(EmotionEntity emotionEntity) {
@@ -97,6 +98,12 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
             mDealingText = null;
             DebugLog.e("----2");
         }
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        DebugLog.e("----w "+w+","+h+","+oldw+","+oldh+",");
+        super.onSizeChanged(w, h, oldw, oldh);
     }
 
     private static class ViewHolder{
@@ -175,6 +182,26 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
                         showWhat = 0;
                     }
                 }
+            }
+        });
+
+        rootView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                DebugLog.e("onScrollChanged");
+            }
+        });
+
+        rootView.getViewTreeObserver().addOnGlobalFocusChangeListener(new ViewTreeObserver.OnGlobalFocusChangeListener() {
+            @Override
+            public void onGlobalFocusChanged(View oldFocus, View newFocus) {
+                DebugLog.e("onGlobalFocusChanged:oldFocus:" + oldFocus + " newFocus:" + newFocus);
+            }
+        });
+        rootView.getViewTreeObserver().addOnWindowFocusChangeListener(new ViewTreeObserver.OnWindowFocusChangeListener() {
+            @Override
+            public void onWindowFocusChanged(boolean hasFocus) {
+                DebugLog.e("onWindowFocusChanged:hasFocus"+hasFocus);
             }
         });
     }
@@ -318,8 +345,15 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
 
     private TextView tvLog;
 
-    public void setLogText(TextView tvLog) {
+    public void setLogText(final TextView tvLog) {
         this.tvLog = tvLog;
+        tvLog.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                updateLog();
+                tvLog.postDelayed(this, 1000);
+            }
+        }, 1000);
     }
 
     public void updateLog() {
@@ -335,9 +369,26 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
         }
         sb.append(" 软键盘-");
         sb.append(mIsKeyboardShow ? " 显示" : " 隐藏");
-        DebugLog.d(sb.toString());
+        logView(rootView, sb);
+        String logText = sb.toString();
+        if (TextUtils.equals(mLogText, logText)) {
+            return;
+        }
+        mLogText = logText;
+        DebugLog.d(logText);
         if (tvLog != null) {
-            tvLog.setText(sb.toString());
+            tvLog.setText(logText);
+        }
+    }
+
+    private void logView(View rootView, StringBuilder sb) {
+        if (rootView != null) {
+            Rect r = new Rect();
+            rootView.getWindowVisibleDisplayFrame(r);
+            int[] location = new int[2];
+            rootView.getLocationOnScreen(location);
+            sb.append("\n");
+            sb.append(rootView + " rect " + r + " rootView location " + location[0] + "," + location[1] + " scrollY : "+rootView.getScrollY());
         }
     }
 
@@ -350,17 +401,17 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        DebugLog.e("before:" + s);
+//        DebugLog.e("before:" + s);
 
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         if (count >1 && !TextUtils.equals(s.subSequence(start, start + count), mDealingText)) {
-            DebugLog.e("复制的:" + s.subSequence(start, start + count));
+//            DebugLog.e("复制的:" + s.subSequence(start, start + count));
             EmotionManager.parseCharSequence((SpannableStringBuilder) s, start, start + count);
         }
-        DebugLog.e("onTextChanged:" + s);
+//        DebugLog.e("onTextChanged:" + s);
     }
 
     @Override
