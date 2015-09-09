@@ -174,12 +174,15 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
                 DebugLog.e("visiable height:" + mVisibleHeight + " mIsKeyboardShow:" + mIsKeyboardShow);
                 updateLog();
                 if (mIsKeyboardShow) {
-                    showView(container);
+//                    showView(container);
+                    hideView(container);
                 } else {
                     if (showWhat == 0) {
                         hideView(container);
                     } else if (showWhat == SHOW_KEYBOARD) {
                         showWhat = 0;
+                    } else {
+                        showView(container);
                     }
                 }
             }
@@ -272,9 +275,10 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
             if (showWhat == SHOW_KEYBOARD) {
                 hideView(container);
             } else if (showWhat == 0) {
-                showView(container);
+//                showView(container);
                 showSoftInput();
             } else {
+//                hideView(container);
                 hideAllViewExceptKeyBoard();
                 showSoftInput();
             }
@@ -288,10 +292,14 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
                     // 隐藏表情,隐藏layout
                     hideView(showView);
                     hideView(container);
+                    showWhat = 0;
                 } else {
+                    showWhat = show_type;
                     hideAllViewExceptKeyBoard();
                     showView(showView);
-                    showView(container);
+                    if (!mIsKeyboardShow) {
+                        showView(container);
+                    }
                 }
             }
         }
