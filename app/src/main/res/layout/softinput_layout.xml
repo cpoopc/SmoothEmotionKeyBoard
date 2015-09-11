@@ -1,58 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/frame"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:gravity="bottom"
-    android:layout_height="wrap_content">
-    <LinearLayout
-        android:layout_above="@+id/container"
-        android:id="@+id/bar_container"
-        android:background="#FBCEB1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/edit_container"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_height="40dp">
+        android:layout_height="0dp"
+        android:layout_above="@+id/bar_container"
+        android:layout_weight="1"
+        android:background="#77ddcc">
+
+        <com.cpoopc.smoothemojikeyboard.emotion.view.EmotionEditText
+            android:id="@+id/edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true" />
+
+        <TextView
+            android:id="@+id/info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edittext"
+            android:textColor="#000000" />
+
+        <Button
+            android:id="@+id/btnState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/info"
+            android:text="state"
+            android:textColor="#000000" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/bar_container"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#FBCEB1"
+        android:orientation="horizontal">
+
         <Button
             android:id="@+id/btnKeyBoard"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:text="键盘"
-            />
+            android:text="键盘" />
+
         <Button
             android:id="@+id/btnSmile"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:text="表情"
-            />
+            android:text="表情" />
+
         <Button
             android:id="@+id/btnOther"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:text="其它"
-            />
+            android:text="其它" />
 
     </LinearLayout>
+
     <RelativeLayout
-        android:layout_alignParentBottom="true"
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="200dp"
+        android:visibility="gone">
+
         <com.cpoopc.smoothemojikeyboard.emotion.view.EmotionPager
             android:id="@+id/smiley"
-            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-        <!--<com.cpoopc.smoothemojikeyboard.smiley.view.SmileyGrid-->
-            <!--android:id="@+id/smiley"-->
-            <!--android:visibility="gone"-->
-            <!--android:background="#008000"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent" />-->
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
         <View
             android:id="@+id/otherView"
-            android:visibility="gone"
-            android:background="#209280"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="#209280"
+            android:visibility="gone" />
     </RelativeLayout>
-</RelativeLayout>
+</LinearLayout>
