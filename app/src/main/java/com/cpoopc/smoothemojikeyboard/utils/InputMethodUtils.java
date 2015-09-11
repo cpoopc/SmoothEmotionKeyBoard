@@ -66,14 +66,14 @@ public class InputMethodUtils {
      */
     public static void showSoftInputMethod(final Context context,
             final View view) {
-        new Handler().postDelayed(new Runnable() {
+//        new Handler().postDelayed(new Runnable() {
 
-            @Override
-            public void run() {
+//            @Override
+//            public void run() {
                 ((InputMethodManager) context
                         .getSystemService(Context.INPUT_METHOD_SERVICE))
                         .showSoftInput(view, 0);
-            }
-        }, DELAY_TIME);
+//            }
+//        }, DELAY_TIME);
     }
 }

@@ -53,6 +53,7 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
 
     private View btnOther;
     private View otherView;
+    private View frame;
 
     private static class ViewHolder{
         private int SHOW_TYPE;
@@ -112,17 +113,24 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
         View layout = LayoutInflater.from(getContext()).inflate(R.layout.softinput_layout, this, true);
         btnKeyBoard = layout.findViewById(R.id.btnKeyBoard);
         container = layout.findViewById(R.id.container);
+        frame = layout.findViewById(R.id.frame);
         setupSmileyView(layout);
         setupOtherView(layout);
         // ....
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+                DebugLog.e("getheight;" + getMeasuredHeight());
+//                if (getMeasuredHeight() != 1230) {
+//                    getLayoutParams().height = 1230;
+//                    requestLayout();
+//                }
                 getKeyboardHeight();
                 DebugLog.e("visiable height:" + mVisibleHeight + " mIsKeyboardShow:" + mIsKeyboardShow);
                 updateLog();
                 if (mIsKeyboardShow) {
-                    hideView(container);
+//                    hideView(container);
+                    showView(container);
 //                    DebugLog.e("-----------------------------键盘弹起,隐藏container");
                 } else {
                     if (showWhat == 0) {
@@ -141,10 +149,21 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
 
     }
 
+    boolean initHeight = false;
     private void getKeyboardHeight() {
         Rect r = new Rect();
         rootView.getWindowVisibleDisplayFrame(r);
         int visibleHeight = r.height() + r.top;
+//        int visibleHeight = r.height();
+        if (!initHeight && frame.getLayoutParams() != null) {
+            // 设置frame高度
+            int frameHeight = rootView.getMeasuredHeight() - r.top;
+            DebugLog.e(rootView.getMeasuredHeight() + " .. " + rootView.getHeight() + "," + r.top + " frameHeight:"+frameHeight);
+            frame.getLayoutParams().height = frameHeight;
+            frame.requestLayout();
+            initHeight = true;
+        }
+
         if (mVisibleHeight == 0) {
             mVisibleHeight = visibleHeight;
             return;
@@ -209,6 +228,7 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
             } else if (showWhat == 0) {
                 showWhat = SHOW_KEYBOARD;
                 showSoftInput();
+                showView(container);
 //                showView(container);// 可以先显示,后隐藏
             } else {
 //                hideView(container);// 不能马上隐藏
