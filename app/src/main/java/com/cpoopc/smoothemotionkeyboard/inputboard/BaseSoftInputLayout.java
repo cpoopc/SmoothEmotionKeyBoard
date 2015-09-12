@@ -130,6 +130,9 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
                 DebugLog.e("visiable height:" + mVisibleHeight + " mIsKeyboardShow:" + mIsKeyboardShow);
                 updateLog();
                 if (mIsKeyboardShow) {
+                    if (showWhat == SHOW_KEYBOARD) {
+                        hideAllViewExceptKeyBoard();
+                    }
                     showView(container);
                 } else {
                     if (showWhat == 0) {
@@ -211,6 +214,7 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
             if (viewHolder != null) {
                 int show_type = viewHolder.getSHOW_TYPE();
                 View showView = viewHolder.getShowView();
+                DebugLog.e("showViewshowView:" + showView + "　showWhat：" + showWhat);
                 // 点击表情
                 if (showWhat == show_type) {
                     // 隐藏表情,隐藏layout
@@ -221,6 +225,7 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
                     showWhat = show_type;
                     hideSoftInput();
                     showView(showView);
+                    showView(container);
                 } else {
                     showWhat = show_type;
                     hideAllViewExceptKeyBoard();
@@ -276,6 +281,7 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
      * 隐藏除了键盘外的view
      */
     private void hideAllViewExceptKeyBoard() {
+        DebugLog.e("----");
         for (int i = 0; i < showViewList.size(); i++) {
             hideView(showViewList.get(i));
         }
