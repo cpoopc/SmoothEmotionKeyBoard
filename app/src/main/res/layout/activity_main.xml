@@ -2,12 +2,37 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" tools:context=".MainActivity">
 
-    <com.cpoopc.smoothemojikeyboard.inputboard.SoftInputLayout
-        android:id="@+id/softinputLayout"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </com.cpoopc.smoothemojikeyboard.inputboard.SoftInputLayout>
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/btnEditFragment"
+                android:text="EditFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/btnChatFragment"
+                android:text="ChatFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </ScrollView>
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
+    <!--<com.cpoopc.smoothemojikeyboard.inputboard.EditSoftInputLayout-->
+        <!--android:id="@+id/softinputLayout"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:orientation="vertical"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+    <!--</com.cpoopc.smoothemojikeyboard.inputboard.EditSoftInputLayout>-->
 
 </RelativeLayout>

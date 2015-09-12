@@ -9,19 +9,14 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.Button;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.cpoopc.smoothemojikeyboard.R;
-import com.cpoopc.smoothemojikeyboard.emotion.data.HahaEmotion;
-import com.cpoopc.smoothemojikeyboard.emotion.view.EmotionPager;
 import com.cpoopc.smoothemojikeyboard.utils.DebugLog;
-import com.cpoopc.smoothemojikeyboard.utils.InputMethodUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,32 +29,31 @@ import java.util.Map;
  * Date: 2015-09-01
  * Time: 00:18
  */
-public class SoftInputLayout extends LinearLayout implements View.OnClickListener {
+public abstract class BaseSoftInputLayout extends LinearLayout implements View.OnClickListener {
 
-    private View rootView;
-    private double mVisibleHeight;
-    private boolean mIsKeyboardShow;
-    private View container;
-    private View btnKeyBoard;
     public final static int SHOW_KEYBOARD = 0X1;
     public final static int SHOW_SMILE = 0X10;
     public final static int SHOW_OTHER = 0X11;
+
+    private View rootView;
+    private int mVisibleHeight;
+    private boolean mIsKeyboardShow;
+
+    // 表情container
+    private View container;
+    private View btnKeyBoard;
     private int showWhat;
     private int keyboardHeight = 400;
     private List<View> showViewList;
     private Map<View,ViewHolder> viewMapping;
 
-    private View btnSmiley;
-    private EmotionPager smileyView;
-
-    private View btnOther;
-    private View otherView;
     private View frame;
-    private View editContainer;
-    private TextView tvState;
-    private Button btnState;
+    // 高度计算
+    private boolean initFrameHeight = false;
 
-    private static class ViewHolder{
+    private EditText editText;
+
+    public static class ViewHolder{
         private int SHOW_TYPE;
         private View showView;
 
@@ -77,66 +71,62 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
         }
     }
 
-    public SoftInputLayout(Context context) {
+    public BaseSoftInputLayout(Context context) {
         super(context);
         init();
     }
 
-    public SoftInputLayout(Context context, AttributeSet attrs) {
+    public BaseSoftInputLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public SoftInputLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BaseSoftInputLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public SoftInputLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public BaseSoftInputLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
 
-    public void init() {
-//        EmotionInputEventBus.instance.setEmotionInputEventListener(this);
+    protected void init() {
+        viewMapping = new HashMap<>();
+        showViewList = new ArrayList<>();
+        inflateView();
     }
+
+    protected abstract void inflateView();
+
+    protected abstract View getContainer();
+
+    protected abstract View getFrame();
+
+    public abstract EditText getEditText();
+
+    protected abstract View getBtnKeyBoard();
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         updateLog();
-        viewMapping = new HashMap<>();
-        showViewList = new ArrayList<>();
         final Context context = getContext();
         if (context instanceof Activity) {
             rootView = ((Activity) context).getWindow().getDecorView();
         } else {
             rootView = this;
         }
-        View layout = LayoutInflater.from(getContext()).inflate(R.layout.softinput_layout, this, true);
-        btnKeyBoard = layout.findViewById(R.id.btnKeyBoard);
-        container = layout.findViewById(R.id.container);
-        frame = layout.findViewById(R.id.frame);
-        editText = (EditText) layout.findViewById(R.id.edittext);
-        tvState = (TextView) layout.findViewById(R.id.info);
-        btnState = (Button) findViewById(R.id.btnState);
-        setLogText(tvState);
-        btnState.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateLog();
-            }
-        });
-//        editContainer = layout.findViewById(R.id.edit_container);
-        setupSmileyView(layout);
-        setupOtherView(layout);
         // ....
+        btnKeyBoard = getBtnKeyBoard();
+        editText = getEditText();
+        container = getContainer();
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                getKeyboardHeight();
+                detectKeyBoardState();
                 DebugLog.e("visiable height:" + mVisibleHeight + " mIsKeyboardShow:" + mIsKeyboardShow);
                 updateLog();
                 if (mIsKeyboardShow) {
@@ -155,18 +145,10 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
 
     }
 
-    boolean initHeight = false;
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if (!initHeight) {
-            DebugLog.e(""+getMeasuredHeight()+".-.-.-");
-            frame.getLayoutParams().height = getMeasuredHeight();
-            initHeight = true;
-        }
-    }
-
-    private void getKeyboardHeight() {
+    /**
+     * 检测键盘弹出状态
+     */
+    private void detectKeyBoardState() {
         Rect r = new Rect();
         rootView.getWindowVisibleDisplayFrame(r);
         int visibleHeight = r.height() + r.top;
@@ -197,29 +179,11 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
         }
     }
 
-    private void setupOtherView(View layout) {
-        btnOther = layout.findViewById(R.id.btnOther);
-        btnOther.setOnClickListener(this);
-        otherView = layout.findViewById(R.id.otherView);
-        add2ShowViewList(otherView);
-        add2MappingMap(btnOther, SHOW_OTHER, otherView);// btnSmiley-(SHOW_SMILE-smileyView)
-    }
-
-    private void setupSmileyView(View layout) {
-        btnSmiley = layout.findViewById(R.id.btnSmile);
-        btnSmiley.setOnClickListener(this);
-        btnKeyBoard.setOnClickListener(this);
-        smileyView = (EmotionPager) layout.findViewById(R.id.smiley);
-        smileyView.bindData(HahaEmotion.DATA);
-        add2ShowViewList(smileyView);
-        add2MappingMap(btnSmiley, SHOW_SMILE, smileyView);// btnSmiley-(SHOW_SMILE-smileyView)
-    }
-
-    private void add2MappingMap(View view, int SHOW_TYPE, View showView) {
+    protected void add2MappingMap(View view, int SHOW_TYPE, View showView) {
         viewMapping.put(view, new ViewHolder(SHOW_TYPE, showView));
     }
 
-    private void add2ShowViewList(View view) {
+    protected void add2ShowViewList(View view) {
         showViewList.add(view);
     }
 
@@ -268,14 +232,40 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
         updateLog();
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (!initFrameHeight) {
+            // 设置frame高度
+            frame = getFrame();
+            DebugLog.e("" + getMeasuredHeight() + ".-.-.-");
+            frame.getLayoutParams().height = getMeasuredHeight();
+            initFrameHeight = true;
+        }
+    }
+
     private void hideSoftInput() {
         DebugLog.e("隐藏软键盘");
-        InputMethodUtils.hideSoftInput(getContext(), editText);
+        if(editText == null){
+            DebugLog.e("editText "+editText);
+            return;
+        }
+        InputMethodManager imm = (InputMethodManager)getContext()
+                .getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editText.getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     private void showSoftInput() {
         DebugLog.e("显示软键盘");
-        InputMethodUtils.showSoftInputMethod(getContext(), editText);
+        if(editText == null){
+            DebugLog.e("editText "+editText);
+            return;
+        }
+        editText.requestFocus();
+        ((InputMethodManager) getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE))
+                .showSoftInput(editText, 0);
     }
 
     private void hideView(View view) {
@@ -291,14 +281,14 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
         }
     }
 
-    private void showView(View view) {
-        view.setVisibility(VISIBLE);
+    public void hideKeyBoardView() {
+        showWhat = 0;
+        hideSoftInput();
+        hideView(container);
     }
 
-    private EditText editText;
-
-    public void setEditText(EditText editText) {
-        this.editText = editText;
+    private void showView(View view) {
+        view.setVisibility(VISIBLE);
     }
 
     /*********************************** 调试LOG ****************************************/
@@ -306,6 +296,10 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
 
     private String mLogText;
 
+    /**
+     * 设置显示log的textview
+     * @param tvLog
+     */
     public void setLogText(final TextView tvLog) {
         this.tvLog = tvLog;
         tvLog.postDelayed(new Runnable() {
@@ -317,6 +311,9 @@ public class SoftInputLayout extends LinearLayout implements View.OnClickListene
         }, 1000);
     }
 
+    /**
+     * 打印log
+     */
     public void updateLog() {
         StringBuilder sb = new StringBuilder();
         if (showWhat == SHOW_KEYBOARD) {

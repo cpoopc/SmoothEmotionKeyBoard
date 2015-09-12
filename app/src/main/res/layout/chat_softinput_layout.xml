@@ -9,56 +9,56 @@
         android:id="@+id/edit_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_above="@+id/bar_container"
         android:layout_weight="1"
         android:background="#77ddcc">
 
-        <com.cpoopc.smoothemojikeyboard.emotion.view.EmotionEditText
-            android:id="@+id/edittext"
+        <ListView
+            android:id="@+id/list_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true" />
-
-        <TextView
-            android:id="@+id/info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/edittext"
-            android:textColor="#000000" />
-
-        <Button
-            android:id="@+id/btnState"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/info"
-            android:text="state"
-            android:textColor="#000000" />
+            android:layout_height="match_parent"
+            android:transcriptMode="alwaysScroll"></ListView>
     </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/bar_container"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:background="#FBCEB1"
+        android:gravity="bottom"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnKeyBoard"
-            android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/btnOther"
+            android:layout_width="40dp"
             android:layout_height="40dp"
-            android:text="键盘" />
+            android:src="@drawable/orca_composer_popup_normal"
+            android:text="其它" />
 
-        <Button
+        <com.cpoopc.smoothemojikeyboard.emotion.view.EmotionEditText
+            android:id="@+id/edittext"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_weight="1"
+            android:maxHeight="100dp" />
+
+        <ImageView
             android:id="@+id/btnSmile"
-            android:layout_width="wrap_content"
+            android:layout_width="40dp"
             android:layout_height="40dp"
+            android:src="@drawable/orca_emoji_category_people"
             android:text="表情" />
 
-        <Button
-            android:id="@+id/btnOther"
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:text="其它" />
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnSend"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="发送" />
+        </RelativeLayout>
 
     </LinearLayout>
 

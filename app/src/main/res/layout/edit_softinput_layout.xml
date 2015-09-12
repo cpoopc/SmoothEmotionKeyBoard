@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/frame"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/edit_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#77ddcc">
+
+        <com.cpoopc.smoothemojikeyboard.emotion.view.EmotionEditText
+            android:id="@+id/edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/bar_container"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#FBCEB1"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnKeyBoard"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="键盘" />
+
+        <Button
+            android:id="@+id/btnSmile"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="表情" />
+
+        <Button
+            android:id="@+id/btnOther"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="其它" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:visibility="gone">
+
+        <com.cpoopc.smoothemojikeyboard.emotion.view.EmotionPager
+            android:id="@+id/smiley"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/otherView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#209280"
+            android:visibility="gone" />
+    </RelativeLayout>
+</LinearLayout>
