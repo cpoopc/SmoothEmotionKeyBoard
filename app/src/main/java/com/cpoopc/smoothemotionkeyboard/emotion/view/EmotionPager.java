@@ -1,4 +1,4 @@
-package com.cpoopc.smoothemojikeyboard.emotion.view;/**
+package com.cpoopc.smoothemotionkeyboard.emotion.view;/**
  * Created by cpoopc on 2015/9/8.
  */
 
@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.cpoopc.smoothemojikeyboard.emotion.bean.EmotionEntity;
+import com.cpoopc.smoothemotionkeyboard.emotion.bean.EmotionEntity;
 
 import java.util.ArrayList;
 import java.util.List;

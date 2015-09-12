@@ -1,4 +1,4 @@
-package com.cpoopc.smoothemojikeyboard;/**
+package com.cpoopc.smoothemotionkeyboard;/**
  * Created by Administrator on 2015-09-07.
  */
 

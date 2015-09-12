@@ -1,4 +1,4 @@
-package com.cpoopc.smoothemojikeyboard.inputboard;/**
+package com.cpoopc.smoothemotionkeyboard.inputboard;/**
  * Created by Administrator on 2015-09-01.
  */
 
@@ -16,7 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.cpoopc.smoothemojikeyboard.utils.DebugLog;
+import com.cpoopc.smoothemotionkeyboard.utils.DebugLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;

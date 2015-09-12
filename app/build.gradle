@@ -5,7 +5,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "com.cpoopc.smoothemojikeyboard"
+        applicationId "com.cpoopc.smoothemotionkeyboard"
         minSdkVersion 9
         targetSdkVersion 22
         versionCode 1

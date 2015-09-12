@@ -1,4 +1,4 @@
-package com.cpoopc.smoothemojikeyboard.fragment;/**
+package com.cpoopc.smoothemotionkeyboard.fragment;/**
  * Created by Administrator on 2015-09-12.
  */
 
@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cpoopc.smoothemojikeyboard.R;
+import com.cpoopc.smoothemotionkeyboard.R;
 
 /**
  * User: cpoopc

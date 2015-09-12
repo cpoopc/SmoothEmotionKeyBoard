@@ -1,4 +1,4 @@
-package com.cpoopc.smoothemojikeyboard.fragment;/**
+package com.cpoopc.smoothemotionkeyboard.fragment;/**
  * Created by Administrator on 2015-09-12.
  */
 
@@ -13,8 +13,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.cpoopc.smoothemojikeyboard.R;
-import com.cpoopc.smoothemojikeyboard.inputboard.ChatSoftInputLayout;
+import com.cpoopc.smoothemotionkeyboard.R;
+import com.cpoopc.smoothemotionkeyboard.inputboard.ChatSoftInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;

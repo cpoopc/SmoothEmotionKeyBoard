@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#77ddcc">
+        android:background="#FFFFFF">
 
         <ListView
             android:id="@+id/list_view"
@@ -34,7 +34,7 @@
             android:src="@drawable/orca_composer_popup_normal"
             android:text="其它" />
 
-        <com.cpoopc.smoothemojikeyboard.emotion.view.EmotionEditText
+        <com.cpoopc.smoothemotionkeyboard.emotion.view.EmotionEditText
             android:id="@+id/edittext"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
         android:layout_height="200dp"
         android:visibility="gone">
 
-        <com.cpoopc.smoothemojikeyboard.emotion.view.EmotionPager
+        <com.cpoopc.smoothemotionkeyboard.emotion.view.EmotionPager
             android:id="@+id/smiley"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

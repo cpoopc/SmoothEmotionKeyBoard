@@ -1,9 +1,9 @@
-package com.cpoopc.smoothemojikeyboard.emotion.data;/**
+package com.cpoopc.smoothemotionkeyboard.emotion.data;/**
  * Created by Administrator on 2015-09-03.
  */
 
-import com.cpoopc.smoothemojikeyboard.emotion.EmotionManager;
-import com.cpoopc.smoothemojikeyboard.emotion.bean.EmotionEntity;
+import com.cpoopc.smoothemotionkeyboard.emotion.EmotionManager;
+import com.cpoopc.smoothemotionkeyboard.emotion.bean.EmotionEntity;
 
 import java.util.ArrayList;
 import java.util.List;

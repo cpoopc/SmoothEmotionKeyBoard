@@ -1,9 +1,9 @@
-package com.cpoopc.smoothemojikeyboard.emotion;/**
+package com.cpoopc.smoothemotionkeyboard.emotion;/**
  * Created by cpoopc on 2015/9/8.
  */
 
-import com.cpoopc.smoothemojikeyboard.emotion.bean.EmotionEntity;
-import com.cpoopc.smoothemojikeyboard.utils.DebugLog;
+import com.cpoopc.smoothemotionkeyboard.emotion.bean.EmotionEntity;
+import com.cpoopc.smoothemotionkeyboard.utils.DebugLog;
 
 /**
  * User: cpoopc

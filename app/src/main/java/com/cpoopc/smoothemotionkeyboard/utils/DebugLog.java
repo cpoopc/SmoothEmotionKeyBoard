@@ -9,7 +9,7 @@ means.
 For more information, please refer to <http://unlicense.org/>
 */
 
-package com.cpoopc.smoothemojikeyboard.utils;
+package com.cpoopc.smoothemotionkeyboard.utils;
 
 import android.text.TextUtils;
 import android.util.Log;

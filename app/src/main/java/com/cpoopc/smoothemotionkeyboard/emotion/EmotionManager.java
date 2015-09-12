@@ -1,4 +1,4 @@
-package com.cpoopc.smoothemojikeyboard.emotion;/**
+package com.cpoopc.smoothemotionkeyboard.emotion;/**
  * Created by Administrator on 2015-09-07.
  */
 
@@ -9,9 +9,9 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
 
-import com.cpoopc.smoothemojikeyboard.ContextHelper;
-import com.cpoopc.smoothemojikeyboard.emotion.bean.EmotionEntity;
-import com.cpoopc.smoothemojikeyboard.utils.DebugLog;
+import com.cpoopc.smoothemotionkeyboard.ContextHelper;
+import com.cpoopc.smoothemotionkeyboard.emotion.bean.EmotionEntity;
+import com.cpoopc.smoothemotionkeyboard.utils.DebugLog;
 
 import java.io.InputStream;
 import java.lang.ref.SoftReference;

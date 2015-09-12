@@ -1,4 +1,4 @@
-package com.cpoopc.smoothemojikeyboard;
+package com.cpoopc.smoothemotionkeyboard;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

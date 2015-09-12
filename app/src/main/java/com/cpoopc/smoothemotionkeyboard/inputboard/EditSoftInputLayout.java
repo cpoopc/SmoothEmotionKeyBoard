@@ -1,4 +1,4 @@
-package com.cpoopc.smoothemojikeyboard.inputboard;/**
+package com.cpoopc.smoothemotionkeyboard.inputboard;/**
  * Created by Administrator on 2015-09-01.
  */
 
@@ -10,9 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
-import com.cpoopc.smoothemojikeyboard.R;
-import com.cpoopc.smoothemojikeyboard.emotion.data.HahaEmotion;
-import com.cpoopc.smoothemojikeyboard.emotion.view.EmotionPager;
+import com.cpoopc.smoothemotionkeyboard.R;
+import com.cpoopc.smoothemotionkeyboard.emotion.data.HahaEmotion;
+import com.cpoopc.smoothemotionkeyboard.emotion.view.EmotionPager;
 
 
 /**

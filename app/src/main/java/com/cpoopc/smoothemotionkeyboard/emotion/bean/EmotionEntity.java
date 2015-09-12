@@ -1,4 +1,4 @@
-package com.cpoopc.smoothemojikeyboard.emotion.bean;/**
+package com.cpoopc.smoothemotionkeyboard.emotion.bean;/**
  * Created by Administrator on 2015-09-03.
  */
 

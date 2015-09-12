@@ -1,17 +1,16 @@
-package com.cpoopc.smoothemojikeyboard;
+package com.cpoopc.smoothemotionkeyboard;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.cpoopc.smoothemojikeyboard.fragment.ChatFragment;
-import com.cpoopc.smoothemojikeyboard.fragment.EditFragment;
-import com.cpoopc.smoothemojikeyboard.utils.DebugLog;
+import com.cpoopc.smoothemotionkeyboard.fragment.ChatFragment;
+import com.cpoopc.smoothemotionkeyboard.fragment.EditFragment;
+import com.cpoopc.smoothemotionkeyboard.utils.DebugLog;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
