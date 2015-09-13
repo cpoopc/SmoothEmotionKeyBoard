@@ -43,7 +43,7 @@
             android:maxHeight="100dp" />
 
         <ImageView
-            android:id="@+id/btnSmile"
+            android:id="@+id/btnEmotion"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/orca_emoji_category_people"
@@ -69,7 +69,7 @@
         android:visibility="gone">
 
         <com.cpoopc.smoothemotionkeyboard.emotion.view.EmotionPager
-            android:id="@+id/smiley"
+            android:id="@+id/emotionPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone" />

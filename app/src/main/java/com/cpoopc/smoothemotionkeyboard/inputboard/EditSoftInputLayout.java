@@ -22,11 +22,13 @@ import com.cpoopc.smoothemotionkeyboard.emotion.view.EmotionPager;
  */
 public class EditSoftInputLayout extends BaseSoftInputLayout implements View.OnClickListener {
 
-    private View container;
     private View btnKeyBoard;
 
-    private View btnSmiley;
-    private EmotionPager smileyView;
+    // emotionView,otherView容器
+    private View container;
+
+    private View btnEmotion;
+    private EmotionPager emotionView;
 
     private View btnOther;
     private View otherView;
@@ -58,7 +60,7 @@ public class EditSoftInputLayout extends BaseSoftInputLayout implements View.OnC
         frame = layout.findViewById(R.id.frame);
         editText = (EditText) layout.findViewById(R.id.edittext);
         setupKeyboardView(layout);
-        setupSmileyView(layout);
+        setupEmotionView(layout);
         setupOtherView(layout);
     }
 
@@ -72,16 +74,16 @@ public class EditSoftInputLayout extends BaseSoftInputLayout implements View.OnC
         btnOther.setOnClickListener(this);
         otherView = layout.findViewById(R.id.otherView);
         add2ShowViewList(otherView);
-        add2MappingMap(btnOther, SHOW_OTHER, otherView);// btnSmiley-(SHOW_SMILE-smileyView)
+        add2MappingMap(btnOther, SHOW_OTHER, otherView);
     }
 
-    private void setupSmileyView(View layout) {
-        btnSmiley = layout.findViewById(R.id.btnSmile);
-        btnSmiley.setOnClickListener(this);
-        smileyView = (EmotionPager) layout.findViewById(R.id.smiley);
-        smileyView.bindData(HahaEmotion.DATA);
-        add2ShowViewList(smileyView);
-        add2MappingMap(btnSmiley, SHOW_SMILE, smileyView);// btnSmiley-(SHOW_SMILE-smileyView)
+    private void setupEmotionView(View layout) {
+        btnEmotion = layout.findViewById(R.id.btnEmotion);
+        btnEmotion.setOnClickListener(this);
+        emotionView = (EmotionPager) layout.findViewById(R.id.emotionPager);
+        emotionView.bindData(HahaEmotion.DATA);
+        add2ShowViewList(emotionView);
+        add2MappingMap(btnEmotion, SHOW_EMOTION, emotionView);// btnEmotion-(SHOW_EMOTION-emotionView)
     }
 
     @Override

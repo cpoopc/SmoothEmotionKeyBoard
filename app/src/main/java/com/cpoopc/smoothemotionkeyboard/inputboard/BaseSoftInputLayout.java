@@ -32,17 +32,20 @@ import java.util.Map;
 public abstract class BaseSoftInputLayout extends LinearLayout implements View.OnClickListener {
 
     public final static int SHOW_KEYBOARD = 0X1;
-    public final static int SHOW_SMILE = 0X10;
+    public final static int SHOW_EMOTION = 0X10;
     public final static int SHOW_OTHER = 0X11;
 
     private View rootView;
     private int mVisibleHeight;
     private boolean mIsKeyboardShow;
 
-    // 表情container
-    private View container;
     private View btnKeyBoard;
+
+    // emotionView,otherView容器
+    private View container;
+
     private int showWhat;
+
     private int keyboardHeight = 400;
     private List<View> showViewList;
     private Map<View,ViewHolder> viewMapping;
@@ -99,6 +102,9 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
         inflateView();
     }
 
+    /**
+     * 渲染自定义布局
+     */
     protected abstract void inflateView();
 
     protected abstract View getContainer();
@@ -107,6 +113,9 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
 
     public abstract EditText getEditText();
 
+    /**
+     * @return 返回键盘按键,若无则返回null
+     */
     protected abstract View getBtnKeyBoard();
 
     @Override
@@ -324,8 +333,8 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
         StringBuilder sb = new StringBuilder();
         if (showWhat == SHOW_KEYBOARD) {
             sb.append("SHOW_KEYBOARD ,");
-        } else if (showWhat == SHOW_SMILE){
-            sb.append("SHOW_SMILE ,");
+        } else if (showWhat == SHOW_EMOTION){
+            sb.append("SHOW_EMOTION ,");
         } else if (showWhat == SHOW_OTHER){
             sb.append("SHOW_OTHER ,");
         } else if (showWhat == 0) {
