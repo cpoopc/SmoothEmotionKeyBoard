@@ -20,7 +20,7 @@ import com.cpoopc.smoothemotionkeyboard.emotion.view.EmotionPager;
  * Date: 2015-09-01
  * Time: 00:18
  */
-public class EditSoftInputLayout extends BaseSoftInputLayout implements View.OnClickListener {
+public class EditSoftInputLayout extends BaseSoftInputLayout {
 
     private View btnKeyBoard;
 

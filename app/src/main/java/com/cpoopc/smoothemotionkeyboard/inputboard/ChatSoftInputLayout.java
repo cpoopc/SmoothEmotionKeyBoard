@@ -21,7 +21,7 @@ import com.cpoopc.smoothemotionkeyboard.emotion.view.EmotionPager;
  * Date: 2015-09-01
  * Time: 00:18
  */
-public class ChatSoftInputLayout extends BaseSoftInputLayout implements View.OnClickListener {
+public class ChatSoftInputLayout extends BaseSoftInputLayout {
 
     // emotionView,otherView容器
     private View container;

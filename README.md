@@ -14,7 +14,63 @@
 <img width="400" height="720" src="https://github.com/cpoopc/SmoothEmotionKeyBoard/blob/master/preview/keyboard_preview.gif" />
 
 ## Usage
-TODO 
+0. android:windowSoftInputMode="adjustResize"
+1. 继承BaseSoftInputLayout,自定义布局,实现父类定义的几个抽象方法(参考已经实现的2种布局:ChatSoftInputLayout|EditSoftInputLayout)
+```
+public class ChatSoftInputLayout extends BaseSoftInputLayout {
+
+    @Override
+    protected void inflateView() {
+        View layout = LayoutInflater.from(getContext()).inflate(R.layout.chat_softinput_layout, this, true);
+        ...
+        setupEmotionView(layout);
+        setupOtherView(layout);
+    }
+
+    private void setupEmotionView(View layout) {
+        ...
+        add2ShowViewList(emotionView);
+        add2MappingMap(btnEmotion, SHOW_EMOTION, emotionView);// btnEmotion-(SHOW_EMOTION-emotionView)
+    }
+
+    @Override
+    protected View getContainer() {
+        return container;
+    }
+
+    @Override
+    protected View getFrame() {
+        return frame;
+    }
+
+    @Override
+    public EditText getEditText() {
+        return editText;
+    }
+
+    @Override
+    protected View getBtnKeyBoard() {
+        return null;
+    }
+
+}
+```
+2. xml中引入控件
+```
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.cpoopc.smoothemotionkeyboard.inputboard.ChatSoftInputLayout
+        android:id="@+id/softinputLayout"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.cpoopc.smoothemotionkeyboard.inputboard.ChatSoftInputLayout>
+</RelativeLayout>
+```
+ 
 ## TODO
 实现原理解析
 
