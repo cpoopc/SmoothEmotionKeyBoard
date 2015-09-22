@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.cpoopc.smoothemotionkeyboard.utils.DebugLog;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +37,6 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
     public final static int SHOW_OTHER = 0X11;
 
     private View rootView;
-    private int mVisibleHeight;
     private boolean mIsKeyboardShow;
 
     private View btnKeyBoard;
@@ -57,6 +55,10 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
     private boolean initFrameHeight = false;
 
     private EditText editText;
+    private int mNavigationBarHeight;
+    private int mHiddenHeight;
+    private int mShownHeight;
+    private int mLastCoverHeight;
 
     public static class ViewHolder{
         private int SHOW_TYPE;
@@ -138,7 +140,7 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
             @Override
             public void onGlobalLayout() {
                 detectKeyBoardState();
-                DebugLog.e("visiable height:" + mVisibleHeight + " mIsKeyboardShow:" + mIsKeyboardShow);
+                DebugLog.i("mShownHeight:" + mShownHeight + " mHiddenHeight: " + mHiddenHeight + " mLastCoverHeight:" + mLastCoverHeight + " mIsKeyboardShow:" + mIsKeyboardShow);
                 updateLog();
                 if (mIsKeyboardShow) {
                     if (showWhat == SHOW_KEYBOARD) {
@@ -148,8 +150,6 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
                 } else {
                     if (showWhat == 0) {
                         hideView(container);
-                    } else if (showWhat == SHOW_KEYBOARD) {
-                        showWhat = 0;
                     } else {
                         showView(container);
                     }
@@ -163,21 +163,18 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
      * 检测键盘弹出状态
      */
     private void detectKeyBoardState() {
-        Rect r = new Rect();
-        rootView.getWindowVisibleDisplayFrame(r);
-        int visibleHeight = r.height() + r.top;
-        if (mVisibleHeight == 0) {
-            mVisibleHeight = visibleHeight;
+        Rect visibleRect = new Rect();
+        rootView.getWindowVisibleDisplayFrame(visibleRect);
+        Rect hitRect = new Rect();
+        rootView.getHitRect(hitRect);
+        int coverHeight = hitRect.bottom - visibleRect.bottom;
+        if (mLastCoverHeight == coverHeight) {
             return;
         }
-        if (mVisibleHeight == visibleHeight) {
-            return;
-        }
-        mVisibleHeight = visibleHeight;
-        // Magic is here
-        DebugLog.e("rootView.getHeight():" + rootView.getHeight());
-        if (mVisibleHeight < rootView.getHeight()) {
-            int height = (int) (rootView.getHeight() - mVisibleHeight);
+        mLastCoverHeight = coverHeight;
+        if (coverHeight > mNavigationBarHeight) {
+            mShownHeight = coverHeight - mHiddenHeight;
+            int height = mShownHeight;
             if (keyboardHeight != height) {
                 keyboardHeight = height;
                 container.getLayoutParams().height = height;
@@ -186,6 +183,7 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
             mIsKeyboardShow = true;
             showWhat = SHOW_KEYBOARD;
         } else {
+            mHiddenHeight = coverHeight;
             mIsKeyboardShow = false;
             if (showWhat == SHOW_KEYBOARD) {
                 showWhat = 0;
@@ -254,13 +252,9 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
         if (!initFrameHeight) {
             // 设置frame高度
             frame = getFrame();
-            DebugLog.e("" + getMeasuredHeight() + ".-.-.-");
-            boolean hasNavigationBar = checkDeviceHasNavigationBar(getContext());
-            int navigationBarHeight = 0;
-            if (hasNavigationBar) {
-                navigationBarHeight = getNavigationBarHeight(getContext());
-            }
-            frame.getLayoutParams().height = getMeasuredHeight() - navigationBarHeight;
+            mNavigationBarHeight = getNavigationBarHeight(getContext());
+            DebugLog.e("NavigationBar h : " + mNavigationBarHeight);
+            frame.getLayoutParams().height = getMeasuredHeight();
             initFrameHeight = true;
         }
     }
@@ -297,7 +291,6 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
      * 隐藏除了键盘外的view
      */
     private void hideAllViewExceptKeyBoard() {
-        DebugLog.e("----");
         for (int i = 0; i < showViewList.size(); i++) {
             hideView(showViewList.get(i));
         }
@@ -313,37 +306,16 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
         view.setVisibility(VISIBLE);
     }
 
-    private static boolean checkDeviceHasNavigationBar(Context context) {
-        boolean hasNavigationBar = false;
-        Resources rs = context.getResources();
-        int id = rs.getIdentifier("config_showNavigationBar", "bool", "android");
-        if (id > 0) {
-            hasNavigationBar = rs.getBoolean(id);
-        }
-
-        //检查配置是否使用默认值
-        try {
-            Class systemPropertiesClass = Class.forName("android.os.SystemProperties");
-            Method m = systemPropertiesClass.getMethod("get", String.class);
-            String navBarOverride = (String) m.invoke(systemPropertiesClass, "qemu.hw.mainkeys");
-            if ("1".equals(navBarOverride)) {
-                hasNavigationBar = false;
-            } else if ("0".equals(navBarOverride)) {
-                hasNavigationBar = true;
-            }
-        } catch (Exception e) {
-            DebugLog.e(e.toString());
-        }
-
-        return hasNavigationBar;
-    }
-
     private static int getNavigationBarHeight(Context context) {
         int navigationBarHeight = 0;
-        Resources rs = context.getResources();
-        int id = rs.getIdentifier("navigation_bar_height", "dimen", "android");
-        if (id > 0 && checkDeviceHasNavigationBar(context)) {
-            navigationBarHeight = rs.getDimensionPixelSize(id);
+        try {
+            Resources rs = context.getResources();
+            int id = rs.getIdentifier("navigation_bar_height", "dimen", "android");
+            if (id > 0 ) {
+                navigationBarHeight = rs.getDimensionPixelSize(id);
+            }
+        } catch (Exception e) {
+            // default 0
         }
         return navigationBarHeight;
     }

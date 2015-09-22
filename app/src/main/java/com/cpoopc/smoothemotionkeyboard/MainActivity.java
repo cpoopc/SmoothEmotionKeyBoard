@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 
 import com.cpoopc.smoothemotionkeyboard.fragment.ChatFragment;
 import com.cpoopc.smoothemotionkeyboard.fragment.EditFragment;
@@ -16,11 +17,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private Button btnEditFragment;
     private Button btnChatFragment;
+    private ScrollView scrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        scrollView = (ScrollView) findViewById(R.id.scrollView);
         btnEditFragment = (Button) findViewById(R.id.btnEditFragment);
         btnChatFragment = (Button) findViewById(R.id.btnChatFragment);
         btnEditFragment.setOnClickListener(this);
@@ -60,8 +63,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-        if(!removeFragment()){
+        if (!removeFragment()) {
             super.onBackPressed();
+        } else {
+            scrollView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -84,6 +89,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             } else {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, clzz.newInstance()).commit();
             }
+            scrollView.setVisibility(View.GONE);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
