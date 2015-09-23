@@ -57,6 +57,7 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
     private EditText editText;
     private int mNavigationBarHeight;
     private int mHiddenHeight;
+    private boolean initHiddenHeight;
     private int mShownHeight;
     private int mLastCoverHeight;
     private int mRootViewHeight;
@@ -170,8 +171,8 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
         Rect hitRect = new Rect();
         rootView.getHitRect(hitRect);
         int coverHeight = hitRect.bottom - visibleRect.bottom;
-//        DebugLog.i("visibleRect:" + visibleRect + " hitRect:" + hitRect + " Height:"+rootView.getHeight());
-//        DebugLog.i("container.height"+container.getLayoutParams().height);
+        DebugLog.i("visibleRect:" + visibleRect + " hitRect:" + hitRect + " Height:" + rootView.getHeight() + " coverHeight:" + coverHeight);
+        DebugLog.i("container.height"+container.getLayoutParams().height);
         if (mLastCoverHeight == coverHeight) {
             return;
         }
@@ -187,7 +188,18 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
             mIsKeyboardShow = true;
             showWhat = SHOW_KEYBOARD;
         } else {
-            mHiddenHeight = coverHeight;
+            if (coverHeight != mHiddenHeight) {
+                int deltaH = mHiddenHeight - coverHeight;
+                mHiddenHeight = coverHeight;
+                if (initHiddenHeight) {
+                    frame.getLayoutParams().height += deltaH;
+//                DebugLog.e("frame.height:" + frame.getLayoutParams().height + " deltaH : " + deltaH);
+                    frame.requestLayout();
+                } else {
+                    initHiddenHeight = true;
+                }
+
+            }
             mIsKeyboardShow = false;
             if (showWhat == SHOW_KEYBOARD) {
                 showWhat = 0;
@@ -271,6 +283,8 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
             mRootViewHeight = rootView.getHeight();
             DebugLog.e("frame.height:" + frame.getLayoutParams().height + " deltaH : " + deltaH);
             frame.requestLayout();
+        } else {
+            DebugLog.e("frame.height:" + frame.getLayoutParams().height);
         }
     }
 
