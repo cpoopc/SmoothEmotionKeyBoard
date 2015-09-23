@@ -59,6 +59,7 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
     private int mHiddenHeight;
     private int mShownHeight;
     private int mLastCoverHeight;
+    private int mRootViewHeight;
 
     public static class ViewHolder{
         private int SHOW_TYPE;
@@ -140,6 +141,7 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
             @Override
             public void onGlobalLayout() {
                 detectKeyBoardState();
+                detectRootViewHeightChange();
                 DebugLog.i("mShownHeight:" + mShownHeight + " mHiddenHeight: " + mHiddenHeight + " mLastCoverHeight:" + mLastCoverHeight + " mIsKeyboardShow:" + mIsKeyboardShow);
                 updateLog();
                 if (mIsKeyboardShow) {
@@ -168,6 +170,8 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
         Rect hitRect = new Rect();
         rootView.getHitRect(hitRect);
         int coverHeight = hitRect.bottom - visibleRect.bottom;
+//        DebugLog.i("visibleRect:" + visibleRect + " hitRect:" + hitRect + " Height:"+rootView.getHeight());
+//        DebugLog.i("container.height"+container.getLayoutParams().height);
         if (mLastCoverHeight == coverHeight) {
             return;
         }
@@ -250,12 +254,23 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if (!initFrameHeight) {
+            mRootViewHeight = rootView.getHeight();
             // 设置frame高度
             frame = getFrame();
+            frame.getLayoutParams().height = getMeasuredHeight();
             mNavigationBarHeight = getNavigationBarHeight(getContext());
             DebugLog.e("NavigationBar h : " + mNavigationBarHeight);
-            frame.getLayoutParams().height = getMeasuredHeight();
             initFrameHeight = true;
+        }
+    }
+
+    private void detectRootViewHeightChange() {
+        if (mRootViewHeight != rootView.getHeight()) {
+            int deltaH = rootView.getHeight() - mRootViewHeight;
+            frame.getLayoutParams().height += deltaH;
+            mRootViewHeight = rootView.getHeight();
+            DebugLog.e("frame.height:" + frame.getLayoutParams().height + " deltaH : " + deltaH);
+            frame.requestLayout();
         }
     }
 
