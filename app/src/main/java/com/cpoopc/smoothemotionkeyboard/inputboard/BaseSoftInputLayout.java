@@ -51,16 +51,11 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
     private Map<View,ViewHolder> viewMapping;
 
     private View frame;
-    // 高度计算
-    private boolean initFrameHeight = false;
-
     private EditText editText;
-    private int mNavigationBarHeight;
+    private int mNavigationBarHeight = -1;
     private int mHiddenHeight;
-    private boolean initHiddenHeight;
     private int mShownHeight;
     private int mLastCoverHeight;
-    private int mRootViewHeight;
 
     public static class ViewHolder{
         private int SHOW_TYPE;
@@ -106,6 +101,37 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
         viewMapping = new HashMap<>();
         showViewList = new ArrayList<>();
         inflateView();
+        updateLog();
+        final Context context = getContext();
+        if (context instanceof Activity) {
+            rootView = ((Activity) context).getWindow().getDecorView();
+        } else {
+            rootView = this;
+        }
+        btnKeyBoard = getBtnKeyBoard();
+        editText = getEditText();
+        container = getContainer();
+        frame = getFrame();
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                detectKeyBoardState();
+//                DebugLog.i("mShownHeight:" + mShownHeight + " mHiddenHeight: " + mHiddenHeight + " mLastCoverHeight:" + mLastCoverHeight + " mIsKeyboardShow:" + mIsKeyboardShow);
+                updateLog();
+                if (mIsKeyboardShow) {
+                    if (showWhat == SHOW_KEYBOARD) {
+                        hideAllViewExceptKeyBoard();
+                    }
+                    showView(container);
+                } else {
+                    if (showWhat == 0) {
+                        hideView(container);
+                    } else {
+                        showView(container);
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -124,44 +150,6 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
      */
     protected abstract View getBtnKeyBoard();
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        updateLog();
-        final Context context = getContext();
-        if (context instanceof Activity) {
-            rootView = ((Activity) context).getWindow().getDecorView();
-        } else {
-            rootView = this;
-        }
-        // ....
-        btnKeyBoard = getBtnKeyBoard();
-        editText = getEditText();
-        container = getContainer();
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                detectKeyBoardState();
-                detectRootViewHeightChange();
-                DebugLog.i("mShownHeight:" + mShownHeight + " mHiddenHeight: " + mHiddenHeight + " mLastCoverHeight:" + mLastCoverHeight + " mIsKeyboardShow:" + mIsKeyboardShow);
-                updateLog();
-                if (mIsKeyboardShow) {
-                    if (showWhat == SHOW_KEYBOARD) {
-                        hideAllViewExceptKeyBoard();
-                    }
-                    showView(container);
-                } else {
-                    if (showWhat == 0) {
-                        hideView(container);
-                    } else {
-                        showView(container);
-                    }
-                }
-            }
-        });
-
-    }
-
     /**
      * 检测键盘弹出状态
      */
@@ -171,9 +159,8 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
         Rect hitRect = new Rect();
         rootView.getHitRect(hitRect);
         int coverHeight = hitRect.bottom - visibleRect.bottom;
-        DebugLog.i("visibleRect:" + visibleRect + " hitRect:" + hitRect + " Height:" + rootView.getHeight() + " coverHeight:" + coverHeight);
-        DebugLog.i("container.height"+container.getLayoutParams().height);
         if (mLastCoverHeight == coverHeight) {
+//            refreshFrame(mIsKeyboardShow ? visibleRect.bottom + mShownHeight : visibleRect.bottom);
             return;
         }
         mLastCoverHeight = coverHeight;
@@ -187,25 +174,31 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
             }
             mIsKeyboardShow = true;
             showWhat = SHOW_KEYBOARD;
+            refreshFrame(visibleRect.bottom + mShownHeight);
         } else {
             if (coverHeight != mHiddenHeight) {
-                int deltaH = mHiddenHeight - coverHeight;
                 mHiddenHeight = coverHeight;
-                // 华为navitionbar显示/隐藏时,可见区域变化
-                if (initHiddenHeight) {
-                    frame.getLayoutParams().height += deltaH;
-//                DebugLog.e("frame.height:" + frame.getLayoutParams().height + " deltaH : " + deltaH);
-                    frame.requestLayout();
-                } else {
-                    initHiddenHeight = true;
-                }
-
             }
+            refreshFrame(visibleRect.bottom);
             mIsKeyboardShow = false;
             if (showWhat == SHOW_KEYBOARD) {
                 showWhat = 0;
             }
         }
+    }
+
+    public void refreshFrame(int bottom) {
+        Rect rect = new Rect();
+        frame.getHitRect(rect);
+        int[] location = new int[2];
+        frame.getLocationInWindow(location);
+        DebugLog.e("bottom:" + bottom + " location onscreen " + location[0] + "," + location[1]);
+        int height = bottom - rect.top - location[1];
+        if (height != frame.getLayoutParams().height) {
+            frame.getLayoutParams().height = height;
+            frame.requestLayout();
+        }
+        updateLog();
     }
 
     protected void add2MappingMap(View view, int SHOW_TYPE, View showView) {
@@ -228,9 +221,7 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
                 showWhat = SHOW_KEYBOARD;
                 showSoftInput();
                 showView(container);
-//                showView(container);// 可以先显示,后隐藏
             } else {
-//                hideView(container);// 不能马上隐藏
                 showWhat = SHOW_KEYBOARD;
                 hideAllViewExceptKeyBoard();
                 showSoftInput();
@@ -266,30 +257,10 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if (!initFrameHeight) {
-            mRootViewHeight = rootView.getHeight();
-            // 设置frame高度
-            frame = getFrame();
+        if (mNavigationBarHeight == -1) {
             frame.getLayoutParams().height = getMeasuredHeight();
             mNavigationBarHeight = getNavigationBarHeight(getContext());
             DebugLog.e("NavigationBar h : " + mNavigationBarHeight);
-            initFrameHeight = true;
-        }
-    }
-
-    /*
-        魅族显示/隐藏navitionbar时,高度会变化
-        (华为navitionbar显示/隐藏时,高度不变,可见区域变化)
-     */
-    private void detectRootViewHeightChange() {
-        if (mRootViewHeight != 0 && mRootViewHeight != rootView.getHeight()) {
-            int deltaH = rootView.getHeight() - mRootViewHeight;
-            frame.getLayoutParams().height += deltaH;
-            mRootViewHeight = rootView.getHeight();
-            DebugLog.e("frame.height:" + frame.getLayoutParams().height + " deltaH : " + deltaH);
-            frame.requestLayout();
-        } else {
-            DebugLog.e("frame.height:" + frame.getLayoutParams().height);
         }
     }
 
@@ -389,7 +360,15 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
             sb.append("SHOW_NOTHING ,");
         }
         sb.append(" 软键盘-");
-        sb.append(mIsKeyboardShow ? " 显示" : " 隐藏");
+        sb.append(mIsKeyboardShow ? " 显示 " : " 隐藏 ");
+        sb.append(" mShownHeight: " + mShownHeight);
+        sb.append(" mHiddenHeight: " + mHiddenHeight);
+
+        try {
+            sb.append(" frame height:" + (frame == null ? " null " : frame.getHeight()));
+        } catch (Exception e) {
+
+        }
         logView(rootView, sb);
         String logText = sb.toString();
         if (TextUtils.equals(mLogText, logText)) {
