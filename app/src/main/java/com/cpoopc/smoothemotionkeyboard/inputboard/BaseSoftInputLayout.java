@@ -191,6 +191,7 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
             if (coverHeight != mHiddenHeight) {
                 int deltaH = mHiddenHeight - coverHeight;
                 mHiddenHeight = coverHeight;
+                // 华为navitionbar显示/隐藏时,可见区域变化
                 if (initHiddenHeight) {
                     frame.getLayoutParams().height += deltaH;
 //                DebugLog.e("frame.height:" + frame.getLayoutParams().height + " deltaH : " + deltaH);
@@ -276,8 +277,12 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
         }
     }
 
+    /*
+        魅族显示/隐藏navitionbar时,高度会变化
+        (华为navitionbar显示/隐藏时,高度不变,可见区域变化)
+     */
     private void detectRootViewHeightChange() {
-        if (mRootViewHeight != rootView.getHeight()) {
+        if (mRootViewHeight != 0 && mRootViewHeight != rootView.getHeight()) {
             int deltaH = rootView.getHeight() - mRootViewHeight;
             frame.getLayoutParams().height += deltaH;
             mRootViewHeight = rootView.getHeight();
