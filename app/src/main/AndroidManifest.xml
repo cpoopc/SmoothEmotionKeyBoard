@@ -3,21 +3,30 @@
     package="com.cpoopc.smoothemotionkeyboard" >
 
     <application
-        android:name="com.cpoopc.smoothemotionkeyboard.App"
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.cpoopc.smoothemotionkeyboard.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
-            android:windowSoftInputMode="adjustResize"
-            >
+            android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.ChatActivity"
+            android:label="@string/title_activity_chat"
+            android:windowSoftInputMode="adjustResize" >
+        </activity>
+        <activity
+            android:name=".activity.EditActivity"
+            android:label="@string/title_activity_edit"
+            android:windowSoftInputMode="adjustResize" >
         </activity>
     </application>
 

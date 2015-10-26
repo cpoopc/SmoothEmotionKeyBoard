@@ -191,8 +191,10 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
         Rect rect = new Rect();
         frame.getHitRect(rect);
         int[] location = new int[2];
-        frame.getLocationInWindow(location);
+        frame.getLocationOnScreen(location);
         DebugLog.e("bottom:" + bottom + " location onscreen " + location[0] + "," + location[1]);
+        frame.getLocationInWindow(location);
+        DebugLog.e("bottom:" + bottom + " location InWindow " + location[0] + "," + location[1]);
         int height = bottom - rect.top - location[1];
         if (height != frame.getLayoutParams().height) {
             frame.getLayoutParams().height = height;
