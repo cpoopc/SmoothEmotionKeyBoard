@@ -163,20 +163,17 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
         rootView.getHitRect(hitRect);
         DebugLog.i("hit.bottom:" + hitRect.bottom + " visible.bottom:" + visibleRect.bottom);
         int coverHeight = hitRect.bottom - visibleRect.bottom;
-        if (mLastCoverHeight == coverHeight) {
+        if (mLastCoverHeight == coverHeight && mLastHitBottom == hitRect.bottom) { // fix魅族动态显示/隐藏navigationbar没有及时响应
             return;
         }
         mLastHitBottom = hitRect.bottom;
         int deltaCoverHeight = coverHeight - mLastCoverHeight;
         mLastCoverHeight = coverHeight;
-        if (deltaCoverHeight == mNavigationBarHeight) {
-            // 显示navigationBar
-
-        } else if (deltaCoverHeight == -mNavigationBarHeight) {
-            // 隐藏navigationBar
-
-        }
         if (coverHeight > mNavigationBarHeight) {
+            if ((deltaCoverHeight == mNavigationBarHeight || deltaCoverHeight == -mNavigationBarHeight) && mIsKeyboardShow) {
+                // 华为显示/隐藏navigationBar
+                mHiddenHeight += deltaCoverHeight;
+            }
             mShownHeight = coverHeight - mHiddenHeight;
             int height = mShownHeight;
             int overMinHeight = 0;
@@ -192,8 +189,11 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
             mIsKeyboardShow = true;
             showWhat = SHOW_KEYBOARD;
             refreshFrame(visibleRect.bottom + mShownHeight + overMinHeight);
-//            refreshFrame(visibleRect.bottom + mShownHeight - overMinHeight);
         } else {
+            if ((deltaCoverHeight == mNavigationBarHeight || deltaCoverHeight == -mNavigationBarHeight) && !mIsKeyboardShow) {
+                // 华为显示/隐藏navigationBar
+                mHiddenHeight += deltaCoverHeight;
+            }
             if (coverHeight != mHiddenHeight) {
                 mHiddenHeight = coverHeight;
             }
