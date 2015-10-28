@@ -21,6 +21,11 @@
 <img width="400" height="720" src="https://github.com/cpoopc/SmoothEmotionKeyBoard/blob/master/preview/keyboard_preview.gif" />
 
 ## Usage
+```
+dependencies{
+    compile 'com.github.cpoopc:smoothsoftinputlayout:1.0.0' // jcenter
+}
+```
 0. android:windowSoftInputMode="adjustResize"
 1. 继承BaseSoftInputLayout,自定义布局,实现父类定义的几个抽象方法(参考已经实现的2种布局:ChatSoftInputLayout|EditSoftInputLayout)
 ```
