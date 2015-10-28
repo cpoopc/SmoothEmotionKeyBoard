@@ -1,4 +1,4 @@
-package com.cpoopc.smoothemotionkeyboard.inputboard;/**
+package com.cpoopc.smoothsoftinputlayout;/**
  * Created by Administrator on 2015-09-01.
  */
 
@@ -8,16 +8,12 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Build;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.cpoopc.smoothemotionkeyboard.utils.DebugLog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,25 +34,21 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
 
     private View rootView;
     private boolean mIsKeyboardShow;
-
     private View btnKeyBoard;
-
     // emotionView,otherView容器
     private View container;
-
     private int showWhat;
-
     private int keyboardHeight;
     private int minOtherBoardHeight = 300;
     private List<View> showViewList;
     private Map<View,ViewHolder> viewMapping;
-
     private View frame;
     private EditText editText;
     private int mNavigationBarHeight = -1;
     private int mHiddenHeight;
     private int mShownHeight;
     private int mLastCoverHeight;
+    private int mLastHitBottom;
 
     public static class ViewHolder{
         private int SHOW_TYPE;
@@ -102,7 +94,6 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
         viewMapping = new HashMap<>();
         showViewList = new ArrayList<>();
         inflateView();
-        updateLog();
         final Context context = getContext();
         if (context instanceof Activity) {
             rootView = ((Activity) context).getWindow().getDecorView();
@@ -117,8 +108,6 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
             @Override
             public void onGlobalLayout() {
                 detectKeyBoardState();
-//                DebugLog.i("mShownHeight:" + mShownHeight + " mHiddenHeight: " + mHiddenHeight + " mLastCoverHeight:" + mLastCoverHeight + " mIsKeyboardShow:" + mIsKeyboardShow);
-                updateLog();
                 if (mIsKeyboardShow) {
                     if (showWhat == SHOW_KEYBOARD) {
                         hideAllViewExceptKeyBoard();
@@ -151,8 +140,6 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
      */
     protected abstract View getBtnKeyBoard();
 
-    private int mLastHitBottom;
-
     /**
      * 检测键盘弹出状态
      */
@@ -161,7 +148,6 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
         rootView.getWindowVisibleDisplayFrame(visibleRect);
         Rect hitRect = new Rect();
         rootView.getHitRect(hitRect);
-        DebugLog.i("hit.bottom:" + hitRect.bottom + " visible.bottom:" + visibleRect.bottom);
         int coverHeight = hitRect.bottom - visibleRect.bottom;
         if (mLastCoverHeight == coverHeight && mLastHitBottom == hitRect.bottom) { // fix魅族动态显示/隐藏navigationbar没有及时响应
             return;
@@ -205,20 +191,20 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
         }
     }
 
-    public void refreshFrame(int bottom) {
+    /**
+     * 刷新frame高度
+     * @param bottom
+     */
+    private void refreshFrame(int bottom) {
         Rect rect = new Rect();
         frame.getHitRect(rect);
         int[] location = new int[2];
-        frame.getLocationOnScreen(location);
-        DebugLog.e("bottom:" + bottom + " location onscreen " + location[0] + "," + location[1]);
         frame.getLocationInWindow(location);
-        DebugLog.e("bottom:" + bottom + " location InWindow " + location[0] + "," + location[1]);
         int height = bottom - rect.top - location[1];
         if (height != frame.getLayoutParams().height) {
             frame.getLayoutParams().height = height;
             frame.requestLayout();
         }
-        updateLog();
     }
 
     protected void add2MappingMap(View view, int SHOW_TYPE, View showView) {
@@ -231,7 +217,6 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
 
     @Override
     public void onClick(View v) {
-        updateLog();
         if (v == btnKeyBoard) {
             // 点击键盘
             if (showWhat == SHOW_KEYBOARD) {
@@ -251,7 +236,6 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
             if (viewHolder != null) {
                 int show_type = viewHolder.getSHOW_TYPE();
                 View showView = viewHolder.getShowView();
-                DebugLog.e("showViewshowView:" + showView + "　showWhat：" + showWhat);
                 // 点击表情
                 if (showWhat == show_type) {
                     // 隐藏表情,隐藏layout
@@ -271,7 +255,6 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
                 }
             }
         }
-        updateLog();
     }
 
     @Override
@@ -280,16 +263,11 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
         if (mNavigationBarHeight == -1) {
             frame.getLayoutParams().height = getMeasuredHeight();
             mNavigationBarHeight = getNavigationBarHeight(getContext());
-            DebugLog.e("NavigationBar h : " + mNavigationBarHeight);
         }
     }
 
     private void hideSoftInput() {
-        DebugLog.e("隐藏软键盘");
-        if(editText == null){
-            DebugLog.e("editText "+editText);
-            return;
-        }
+        if(editText == null) return;
         InputMethodManager imm = (InputMethodManager)getContext()
                 .getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(editText.getWindowToken(),
@@ -297,11 +275,7 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
     }
 
     private void showSoftInput() {
-        DebugLog.e("显示软键盘");
-        if(editText == null){
-            DebugLog.e("editText "+editText);
-            return;
-        }
+        if(editText == null) return;
         editText.requestFocus();
         ((InputMethodManager) getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE))
@@ -352,73 +326,6 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
      */
     public void setMinOtherBoardHeight(int minOtherBoardHeight) {
         this.minOtherBoardHeight = minOtherBoardHeight;
-    }
-
-    /*********************************** 调试LOG ****************************************/
-    private TextView tvLog;
-
-    private String mLogText;
-
-    /**
-     * 设置显示log的textview
-     * @param tvLog
-     */
-    public void setLogText(final TextView tvLog) {
-        this.tvLog = tvLog;
-        tvLog.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateLog();
-                tvLog.postDelayed(this, 1000);
-            }
-        }, 1000);
-    }
-
-    /**
-     * 打印log
-     */
-    public void updateLog() {
-        StringBuilder sb = new StringBuilder();
-        if (showWhat == SHOW_KEYBOARD) {
-            sb.append("SHOW_KEYBOARD ,");
-        } else if (showWhat == SHOW_EMOTION){
-            sb.append("SHOW_EMOTION ,");
-        } else if (showWhat == SHOW_OTHER){
-            sb.append("SHOW_OTHER ,");
-        } else if (showWhat == 0) {
-            sb.append("SHOW_NOTHING ,");
-        }
-        sb.append(" 软键盘-");
-        sb.append(mIsKeyboardShow ? " 显示 " : " 隐藏 ");
-        sb.append(" mShownHeight: " + mShownHeight);
-        sb.append(" mHiddenHeight: " + mHiddenHeight);
-
-        try {
-            sb.append(" frame height:" + (frame == null ? " null " : frame.getHeight()));
-        } catch (Exception e) {
-
-        }
-        logView(rootView, sb);
-        String logText = sb.toString();
-        if (TextUtils.equals(mLogText, logText)) {
-            return;
-        }
-        mLogText = logText;
-        DebugLog.d(logText);
-        if (tvLog != null) {
-            tvLog.setText(logText);
-        }
-    }
-
-    private void logView(View rootView, StringBuilder sb) {
-        if (rootView != null) {
-            Rect r = new Rect();
-            rootView.getWindowVisibleDisplayFrame(r);
-            int[] location = new int[2];
-            rootView.getLocationOnScreen(location);
-            sb.append("\n");
-            sb.append(rootView + " rect " + r + " rootView location " + location[0] + "," + location[1] + " scrollY : " + rootView.getScrollY());
-        }
     }
 
 }

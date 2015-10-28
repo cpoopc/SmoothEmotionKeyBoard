@@ -13,6 +13,7 @@ import android.widget.EditText;
 import com.cpoopc.smoothemotionkeyboard.R;
 import com.cpoopc.smoothemotionkeyboard.emotion.data.HahaEmotion;
 import com.cpoopc.smoothemotionkeyboard.emotion.view.EmotionPager;
+import com.cpoopc.smoothsoftinputlayout.BaseSoftInputLayout;
 
 
 /**

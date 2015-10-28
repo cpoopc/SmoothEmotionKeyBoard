@@ -7,8 +7,15 @@
 于是就搞了这个..
 ****
 ## Feature 
+
+* 流畅切换 输入法/表情(不闪动)
+* 自动适应 输入法高度变化,高度跟随,亦可限制表情栏最小高度,避免输入法高度太小导致表情显示不完整
+* 自动适应 动态显示/隐藏navigationbar
+
 * smoothly switch softKeyBoard|EmotionBoard
-* autofit height
+* autofit dynamic softKeyBoard height change
+* autofit dynamic show/hide navigationbar
+
 
 ## PreView
 <img width="400" height="720" src="https://github.com/cpoopc/SmoothEmotionKeyBoard/blob/master/preview/keyboard_preview.gif" />
