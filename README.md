@@ -63,7 +63,6 @@ public class ChatSoftInputLayout extends BaseSoftInputLayout {
     android:layout_height="match_parent">
     <com.cpoopc.smoothemotionkeyboard.inputboard.ChatSoftInputLayout
         android:id="@+id/softinputLayout"
-        android:layout_alignParentTop="true"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
