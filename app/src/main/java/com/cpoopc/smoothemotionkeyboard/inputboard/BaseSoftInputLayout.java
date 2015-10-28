@@ -46,7 +46,8 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
 
     private int showWhat;
 
-    private int keyboardHeight = 400;
+    private int keyboardHeight;
+    private int minOtherBoardHeight = 300;
     private List<View> showViewList;
     private Map<View,ViewHolder> viewMapping;
 
@@ -150,6 +151,8 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
      */
     protected abstract View getBtnKeyBoard();
 
+    private int mLastHitBottom;
+
     /**
      * 检测键盘弹出状态
      */
@@ -158,15 +161,29 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
         rootView.getWindowVisibleDisplayFrame(visibleRect);
         Rect hitRect = new Rect();
         rootView.getHitRect(hitRect);
+        DebugLog.i("hit.bottom:" + hitRect.bottom + " visible.bottom:" + visibleRect.bottom);
         int coverHeight = hitRect.bottom - visibleRect.bottom;
         if (mLastCoverHeight == coverHeight) {
-//            refreshFrame(mIsKeyboardShow ? visibleRect.bottom + mShownHeight : visibleRect.bottom);
             return;
         }
+        mLastHitBottom = hitRect.bottom;
+        int deltaCoverHeight = coverHeight - mLastCoverHeight;
         mLastCoverHeight = coverHeight;
+        if (deltaCoverHeight == mNavigationBarHeight) {
+            // 显示navigationBar
+
+        } else if (deltaCoverHeight == -mNavigationBarHeight) {
+            // 隐藏navigationBar
+
+        }
         if (coverHeight > mNavigationBarHeight) {
             mShownHeight = coverHeight - mHiddenHeight;
             int height = mShownHeight;
+            int overMinHeight = 0;
+            if (height < minOtherBoardHeight) {
+                overMinHeight = minOtherBoardHeight - height;
+                height = minOtherBoardHeight;
+            }
             if (keyboardHeight != height) {
                 keyboardHeight = height;
                 container.getLayoutParams().height = height;
@@ -174,7 +191,8 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
             }
             mIsKeyboardShow = true;
             showWhat = SHOW_KEYBOARD;
-            refreshFrame(visibleRect.bottom + mShownHeight);
+            refreshFrame(visibleRect.bottom + mShownHeight + overMinHeight);
+//            refreshFrame(visibleRect.bottom + mShownHeight - overMinHeight);
         } else {
             if (coverHeight != mHiddenHeight) {
                 mHiddenHeight = coverHeight;
@@ -325,6 +343,15 @@ public abstract class BaseSoftInputLayout extends LinearLayout implements View.O
             // default 0
         }
         return navigationBarHeight;
+    }
+
+    /**
+     * 设置最小高度(除了键盘外的最小高度)
+     *
+     * @param minOtherBoardHeight
+     */
+    public void setMinOtherBoardHeight(int minOtherBoardHeight) {
+        this.minOtherBoardHeight = minOtherBoardHeight;
     }
 
     /*********************************** 调试LOG ****************************************/
